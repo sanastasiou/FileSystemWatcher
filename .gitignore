@@ -27,3 +27,8 @@
 *.out
 *.app
 *.sdf
+*.opensdf
+*.tlog
+*.bi
+*.lastbuildstate
+*.manifest
