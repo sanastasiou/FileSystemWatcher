@@ -4,7 +4,7 @@
 #include "FileSystemWactherCLRWrapper.h"
 #include "DirectoryChangeHandler.h"
 #include "CDirectoryChangeWatcher.h"
-#include "RTextNotificationClass.h"
+#include "NotificationClass.h"
 
 using namespace System;
 using namespace System::IO;

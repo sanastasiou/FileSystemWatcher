@@ -33,3 +33,8 @@
 *.lastbuildstate
 *.manifest
 *.metagen
+*.pdb
+*.ilk
+*.log
+*.ipch
+*.cache

@@ -3,7 +3,7 @@
 #include "FileSystemWactherCLRWrapper.h"
 #include "DirectoryChangeHandler.h"
 #include "CDirectoryChangeWatcher.h"
-#include "RTextNotificationClass.h"
+#include "NotificationClass.h"
 #include <vcclr.h>
 #include <atlstr.h>
 #include <stdio.h>
@@ -29,7 +29,7 @@ namespace FileSystemWactherCLRWrapper
         HasGUI                = hasGUI;
         MonitorSubDirectories = includeSubDir;
         this->_pDirectoryWatcher = new CDirectoryChangeWatcher( false );
-        this->_pDirectoryChangeHandler = new RTextNotificationClass( this, hasGUI, this->getCString( include ), this->getCString( exclude), filterFlags );             
+        this->_pDirectoryChangeHandler = new NotificationClass( this, hasGUI, this->getCString( include ), this->getCString( exclude), filterFlags );             
     }
 
     void FileSystemWatcher::RestartWatching()
