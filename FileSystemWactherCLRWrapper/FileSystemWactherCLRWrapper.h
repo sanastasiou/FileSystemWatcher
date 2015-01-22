@@ -4,7 +4,7 @@
 #include "FileSystemWactherCLRWrapper.h"
 #include "DirectoryChangeHandler.h"
 #include "CDirectoryChangeWatcher.h"
-#include "NotificationClass.h"
+#include "RTextNotificationClass.h"
 
 using namespace System;
 using namespace System::IO;
@@ -221,10 +221,24 @@ namespace FileSystemWactherCLRWrapper {
          * \param [in,out]  e   If non-null, the FileSystemEventArgs^ to process.
          */
         void RaiseOnFileModified( FileSystemEventArgs^ e) { Changed( this, e ); }
+
+        void StopWatching()
+        {
+            _pDirectoryWatcher->UnwatchAllDirectories();
+            _isWatching = false;
+        }
+
+        void RestartWatching();
     private:
-        CDirectoryChangeWatcher *        _pDirectoryWatcher;            //!< The directory watcher.
-        CDirectoryChangeHandler *        _pDirectoryChangeHandler;      //!< The directory notifications handler.
-        char                    *        _pWatchedDirectory;            //!< The directory being watched.
+        CDirectoryChangeWatcher * _pDirectoryWatcher;       //!< The directory watcher.
+        CDirectoryChangeHandler * _pDirectoryChangeHandler; //!< The directory notifications handler.
+        char                    * _pWatchedDirectory;       //!< The directory being watched.
+        bool                      _hasGUI;                  
+        char*                     _include;
+        char*                     _exclude;
+        DWORD                     _filterFlags;
+        bool                      _includeSubDir;
+        bool                      _isWatching;
 
         /**
          * \fn  CString FileSystemWatcher::getCString( String^ systemString );

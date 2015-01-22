@@ -3,7 +3,7 @@
 #include "FileSystemWactherCLRWrapper.h"
 #include "DirectoryChangeHandler.h"
 #include "CDirectoryChangeWatcher.h"
-#include "NotificationClass.h"
+#include "RTextNotificationClass.h"
 #include <vcclr.h>
 #include <atlstr.h>
 #include <stdio.h>
@@ -13,7 +13,14 @@ using namespace System::Runtime::InteropServices;
 
 namespace FileSystemWactherCLRWrapper
 {
-    FileSystemWatcher::FileSystemWatcher( String^ dir, bool hasGUI, String^ include, String^ exclude, DWORD filterFlags, bool includeSubDir )
+    FileSystemWatcher::FileSystemWatcher( String^ dir, bool hasGUI, String^ include, String^ exclude, DWORD filterFlags, bool includeSubDir ) :
+         _pWatchedDirectory((char*)(void*)Marshal::StringToHGlobalAnsi(dir)),
+         _hasGUI(hasGUI),
+         _include((char*)(void*)Marshal::StringToHGlobalAnsi(include)),
+         _exclude((char*)(void*)Marshal::StringToHGlobalAnsi(exclude)),
+         _filterFlags(filterFlags),
+         _includeSubDir(includeSubDir),
+         _isWatching(false)
     {
         Directory             = dir;
         Include               = include;
@@ -22,16 +29,22 @@ namespace FileSystemWactherCLRWrapper
         HasGUI                = hasGUI;
         MonitorSubDirectories = includeSubDir;
         this->_pDirectoryWatcher = new CDirectoryChangeWatcher( false );
-        this->_pDirectoryChangeHandler = new NotificationClass( this, hasGUI, this->getCString( include ), this->getCString( exclude), filterFlags );
-        this->_pWatchedDirectory = (char*)(void*)Marshal::StringToHGlobalAnsi(dir);
-        this->_pDirectoryWatcher->WatchDirectory( CString( this->_pWatchedDirectory ),
-                                                  filterFlags,
-                                                  this->_pDirectoryChangeHandler,
-                                                  includeSubDir,
-                                                  this->getCString( include ),
-                                                  this->getCString( exclude)
-                                                );
+        this->_pDirectoryChangeHandler = new RTextNotificationClass( this, hasGUI, this->getCString( include ), this->getCString( exclude), filterFlags );             
+    }
 
+    void FileSystemWatcher::RestartWatching()
+    {
+        if(!_isWatching)
+        {
+            _pDirectoryWatcher->WatchDirectory( CString( _pWatchedDirectory ),
+                                                _filterFlags,
+                                                this->_pDirectoryChangeHandler,
+                                                _includeSubDir,
+                                                CString( _include ),
+                                                CString( _exclude)
+                                              );
+            _isWatching = true;
+        }
     }
 
     CString FileSystemWatcher::getCString( String^ systemString )
@@ -77,5 +90,7 @@ namespace FileSystemWactherCLRWrapper
         delete this->_pDirectoryWatcher;
         delete this->_pDirectoryChangeHandler;
         Marshal::FreeHGlobal( (System::IntPtr)(this->_pWatchedDirectory) );
+        Marshal::FreeHGlobal( (System::IntPtr)(this->_exclude) );
+        Marshal::FreeHGlobal( (System::IntPtr)(this->_include) );
     }
 }
