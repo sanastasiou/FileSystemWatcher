@@ -30,6 +30,7 @@ namespace FileSystemWactherCLRWrapper
         MonitorSubDirectories = includeSubDir;
         this->_pDirectoryWatcher = new CDirectoryChangeWatcher( false );
         this->_pDirectoryChangeHandler = new NotificationClass( this, hasGUI, this->getCString( include ), this->getCString( exclude), filterFlags );             
+        RestartWatching();
     }
 
     void FileSystemWatcher::RestartWatching()
@@ -87,6 +88,7 @@ namespace FileSystemWactherCLRWrapper
 
     FileSystemWatcher::~FileSystemWatcher()
     {
+        StopWatching();
         delete this->_pDirectoryWatcher;
         delete this->_pDirectoryChangeHandler;
         Marshal::FreeHGlobal( (System::IntPtr)(this->_pWatchedDirectory) );
