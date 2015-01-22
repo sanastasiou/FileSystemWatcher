@@ -101,6 +101,14 @@ namespace FileSystemWactherCLRWrapper {
          * \return  true if monitor sub directories, false if not.
          */
         property bool MonitorSubDirectories;
+
+        void StopWatching()
+        {
+            _pDirectoryWatcher->UnwatchAllDirectories();
+            _isWatching = false;
+        }
+
+        void RestartWatching();
     internal:
         /**
          * \fn  void FileSystemWatcher::OnFileNameChanged();
@@ -221,14 +229,6 @@ namespace FileSystemWactherCLRWrapper {
          * \param [in,out]  e   If non-null, the FileSystemEventArgs^ to process.
          */
         void RaiseOnFileModified( FileSystemEventArgs^ e) { Changed( this, e ); }
-
-        void StopWatching()
-        {
-            _pDirectoryWatcher->UnwatchAllDirectories();
-            _isWatching = false;
-        }
-
-        void RestartWatching();
     private:
         CDirectoryChangeWatcher * _pDirectoryWatcher;       //!< The directory watcher.
         CDirectoryChangeHandler * _pDirectoryChangeHandler; //!< The directory notifications handler.
