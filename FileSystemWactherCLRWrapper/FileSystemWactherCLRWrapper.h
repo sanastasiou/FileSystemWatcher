@@ -106,7 +106,6 @@ namespace FileSystemWactherCLRWrapper {
         {
             if(_isWatching)
             {
-                _pDirectoryWatcher->UnwatchAllDirectories();
                 _isWatching = false;
             }
         }

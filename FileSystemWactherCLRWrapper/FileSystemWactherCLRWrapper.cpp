@@ -20,7 +20,7 @@ namespace FileSystemWactherCLRWrapper
          _exclude((char*)(void*)Marshal::StringToHGlobalAnsi(exclude)),
          _filterFlags(filterFlags),
          _includeSubDir(includeSubDir),
-         _isWatching(false)
+         _isWatching(true)
     {
         Directory             = dir;
         Include               = include;
@@ -30,22 +30,21 @@ namespace FileSystemWactherCLRWrapper
         MonitorSubDirectories = includeSubDir;
         this->_pDirectoryWatcher = new CDirectoryChangeWatcher( false );
         this->_pDirectoryChangeHandler = new NotificationClass( this, hasGUI, this->getCString( include ), this->getCString( exclude), filterFlags );             
-        RestartWatching();
+        _pDirectoryWatcher->WatchDirectory( CString( _pWatchedDirectory ),
+                                            _filterFlags,
+                                            this->_pDirectoryChangeHandler,
+                                            _includeSubDir,
+                                            CString( _include ),
+                                            CString( _exclude)
+                                            );
     }
 
     void FileSystemWatcher::RestartWatching()
     {
         if(!_isWatching)
         {
-            _pDirectoryWatcher->WatchDirectory( CString( _pWatchedDirectory ),
-                                                _filterFlags,
-                                                this->_pDirectoryChangeHandler,
-                                                _includeSubDir,
-                                                CString( _include ),
-                                                CString( _exclude)
-                                              );
             _isWatching = true;
-        }
+        }        
     }
 
     CString FileSystemWatcher::getCString( String^ systemString )
@@ -58,32 +57,47 @@ namespace FileSystemWactherCLRWrapper
 
     void FileSystemWatcher::OnFileNameChanged(const CString & strOldFileName, const CString & strNewFileName)
     {
-        RenamedEventArgs^ aTempArgs = gcnew RenamedEventArgs( System::IO::WatcherChangeTypes::Renamed, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strNewFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strNewFileName )), System::IO::Path::GetFileName( gcnew String( strOldFileName )));
-        this->RaiseOnFileNameChanged( aTempArgs );
+        if(_isWatching)
+        {
+            RenamedEventArgs^ aTempArgs = gcnew RenamedEventArgs( System::IO::WatcherChangeTypes::Renamed, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strNewFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strNewFileName )), System::IO::Path::GetFileName( gcnew String( strOldFileName )));
+            this->RaiseOnFileNameChanged( aTempArgs );
+        }
     }
 
     void FileSystemWatcher::OnReadDirectoryChangesError( DWORD dwError, const CString & strDirectoryName )
     {
-        ErrorEventArgs^ aTempArgs = gcnew ErrorEventArgs( gcnew System::Exception( String::Format( "Error while observing directory : {0}. Error code : {1}", gcnew String( strDirectoryName ), dwError ) ) );
-        this->RaiseOnReadDirectoryChangesError( aTempArgs );
+        if(_isWatching)
+        {
+            ErrorEventArgs^ aTempArgs = gcnew ErrorEventArgs( gcnew System::Exception( String::Format( "Error while observing directory : {0}. Error code : {1}", gcnew String( strDirectoryName ), dwError ) ) );
+            this->RaiseOnReadDirectoryChangesError( aTempArgs );
+        }
     }
 
     void FileSystemWatcher::OnFileAdded( const CString & strFileName )
     {
-        FileSystemEventArgs^ aTempArgs = gcnew FileSystemEventArgs( System::IO::WatcherChangeTypes::Created, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strFileName )) );
-        this->RaiseOnFileAdded( aTempArgs );
+        if(_isWatching)
+        {
+            FileSystemEventArgs^ aTempArgs = gcnew FileSystemEventArgs( System::IO::WatcherChangeTypes::Created, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strFileName )) );
+            this->RaiseOnFileAdded( aTempArgs );
+        }
     }
 
     void FileSystemWatcher::OnFileRemoved( const CString & strFileName )
     {
-        FileSystemEventArgs^ aTempArgs = gcnew FileSystemEventArgs( System::IO::WatcherChangeTypes::Deleted, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strFileName )) );
-        this->RaiseOnFileRemoved( aTempArgs );
+        if(_isWatching)
+        {
+            FileSystemEventArgs^ aTempArgs = gcnew FileSystemEventArgs( System::IO::WatcherChangeTypes::Deleted, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strFileName )) );
+            this->RaiseOnFileRemoved( aTempArgs );
+        }
     }
 
     void FileSystemWatcher::OnFileModified( const CString & strFileName )
     {
-        FileSystemEventArgs^ aTempArgs = gcnew FileSystemEventArgs( System::IO::WatcherChangeTypes::Changed, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strFileName )) );
-        this->RaiseOnFileModified( aTempArgs );
+        if(_isWatching)
+        {
+            FileSystemEventArgs^ aTempArgs = gcnew FileSystemEventArgs( System::IO::WatcherChangeTypes::Changed, gcnew String( System::IO::Path::GetDirectoryName( gcnew String( strFileName ) ) ), System::IO::Path::GetFileName( gcnew String( strFileName )) );
+            this->RaiseOnFileModified( aTempArgs );
+        }
     }
 
     FileSystemWatcher::~FileSystemWatcher()

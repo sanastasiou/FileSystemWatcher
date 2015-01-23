@@ -592,8 +592,7 @@ PARAMETERS:
 }
 
 BOOL CDirectoryChangeWatcher::UnwatchAllDirectories()
-{
-	
+{	
 	//unwatch all of the watched directories
 	//delete all of the CDirWatchInfo objects,
 	//kill off the worker thread
