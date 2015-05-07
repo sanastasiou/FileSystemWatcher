@@ -39,3 +39,4 @@
 *.ipch
 *.cache
 *.suo
+TestFileSystemWatcher/obj/
