@@ -1,8 +1,0 @@
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\bin\Release\TestFileSystemWatcher.exe.config
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\bin\Release\TestFileSystemWatcher.exe
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\bin\Release\TestFileSystemWatcher.pdb
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\bin\Release\FileSystemWatcherCLRWrapper.dll
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\bin\Release\FileSystemWatcherCLRWrapper.pdb
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\obj\Release\TestFileSystemWatcher.csprojResolveAssemblyReference.cache
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\obj\Release\TestFileSystemWatcher.exe
-C:\Work\non_BMW\FileSystemWatcher\TestFileSystemWatcher\obj\Release\TestFileSystemWatcher.pdb

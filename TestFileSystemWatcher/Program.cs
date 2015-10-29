@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FileSystemWactherCLRWrapper;
 
 namespace TestFileSystemWatcher
 {
-    class Program
+    using NUnit.Framework;
+
+    [TestFixture]
+    public class FileSystemWatcherTests
     {
-        static void Main(string[] args)
+        [Test]
+        public void SmokeTest()
         {
             FileSystemWatcher myWatcher = new FileSystemWatcher(@"C:\Work\body_trunk",
                                                                 false,
@@ -17,27 +17,14 @@ namespace TestFileSystemWatcher
                                                                 String.Empty,
                                                                 (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
                                                                 true);
-
-            myWatcher.Changed += myWatcher_Changed;
-
-            char aTemp;
-            while ((aTemp = Console.ReadKey().KeyChar) != 'c')
+            try
             {
-                switch(aTemp)
-                {
-                    case 's':
-                        myWatcher.StopWatching();
-                        break;
-                    case 'a':
-                        myWatcher.RestartWatching();
-                        break;
-                }
+                myWatcher.Dispose();
             }
-        }
-
-        static void myWatcher_Changed(object sender, System.IO.FileSystemEventArgs e)
-        {
-            Console.WriteLine(String.Format("File {0} has been changed..", e.FullPath));
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

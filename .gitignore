@@ -40,3 +40,6 @@
 *.cache
 *.suo
 TestFileSystemWatcher/obj/
+TestFileSystemWatcher/bin/
+packages/
+*.map
