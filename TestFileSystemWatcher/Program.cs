@@ -97,15 +97,19 @@ namespace TestFileSystemWatcher
                 bool notificationFired = false;
                 EventHandler<System.IO.FileSystemEventArgs> handler = (s, e) => { notificationFired = true; };
                 myWatcher.Changed += handler;
-        
-                //modify file
-                using (var aFile = System.IO.File.OpenWrite(_testFile))
+
+                for (int i = 0; i < 100; ++i)
                 {
-                    var aBytesToWrite = GetBytes("Some extra stuff");
-                    aFile.Write(aBytesToWrite, 0, aBytesToWrite.Length);
+
+                    //modify file
+                    using (var aFile = System.IO.File.OpenWrite(_testFile))
+                    {
+                        var aBytesToWrite = GetBytes("Some extra stuff");
+                        aFile.Write(aBytesToWrite, 0, aBytesToWrite.Length);
+                    }
+
+                    System.Threading.Thread.Sleep(5000);
                 }
-        
-                System.Threading.Thread.Sleep(5000);
         
                 myWatcher.Changed -= handler;
                 myWatcher.Dispose();

@@ -3,6 +3,7 @@
 #include <vector>
 #include "WindowsBase/File.h"
 #include <msclr/marshal_cppstd.h>
+#include "atlpath.h"
 
 namespace Windows
 {
@@ -61,19 +62,89 @@ namespace File
     void WINAPI NativeFileSystemWatcher::DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped)
     {
         FileSystemWatcherBase* pBlock = reinterpret_cast<FileSystemWatcherBase*>(lpOverlapped->hEvent);
-
+        System::Diagnostics::Trace::WriteLine(dwErrorCode);
         if (dwErrorCode == ERROR_OPERATION_ABORTED)
         {
             System::Diagnostics::Trace::WriteLine("omfg!!!");
             //send error notification to shut down this watcher
             return;
         }
+
+        // This might mean overflow? Not sure.
+        if (!dwNumberOfBytesTransfered)
+        {
+            //nothing to read...
+            return;
+        }
+
+        // Can't use sizeof(FILE_NOTIFY_INFORMATION) because
+        // the structure is padded to 16 bytes.
+        _ASSERTE(dwNumberOfBytesTransfered >= offsetof(FILE_NOTIFY_INFORMATION, FileName) + sizeof(WCHAR));
+
+        // This might mean overflow? Not sure.
+        if (!dwNumberOfBytesTransfered)
+            return;
+
+        pBlock->BackupBuffer(dwNumberOfBytesTransfered);
+
+        // Get the new read issued as fast as possible. The documentation
+        // says that the original OVERLAPPED structure will not be used
+        // again once the completion routine is called.
+        pBlock->BeginRead(pBlock->GetNotificationRoutine(), pBlock->GetDirHandle() );
+
+        pBlock->ProcessNotification();
     }
 
     LPOVERLAPPED_COMPLETION_ROUTINE NativeFileSystemWatcher::GetNotificationRoutine()const
     {
         return &NativeFileSystemWatcher::DirectoryNotification;
     }
+
+    void NativeFileSystemWatcher::ProcessNotification()
+    {
+        BYTE* pBase = _backupBuffer.data();
+
+        for (;;)
+        {
+            FILE_NOTIFY_INFORMATION& fni = (FILE_NOTIFY_INFORMATION&)*pBase;
+
+            std::wstring wstrFilename(fni.FileName, fni.FileNameLength / sizeof(wchar_t));
+            // Handle a trailing backslash, such as for a root directory.
+            if ( wstrFilename.substr(wstrFilename.length() - 1, 1) != std::wstring(L"\\"))
+            {
+                wstrFilename = FileSystemWatcherBase::_directoryInfo._dir + L"\\" + wstrFilename;
+            }
+            else
+            {
+                wstrFilename = FileSystemWatcherBase::_directoryInfo._dir + wstrFilename;
+            }
+
+            // If it could be a short filename, expand it.
+            LPCWSTR wszFilename = ::PathFindFileNameW(wstrFilename.c_str());
+            int len = lstrlenW(wszFilename);
+            // The maximum length of an 8.3 filename is twelve, including the dot.
+            if (len <= 12 && wcschr(wszFilename, L'~'))
+            {
+                // Convert to the long filename form. Unfortunately, this
+                // does not work for deletions, so it's an imperfect fix.
+                wchar_t wbuf[MAX_PATH];
+                if (::GetLongPathNameW(wstrFilename.c_str(), wbuf, _countof(wbuf)) > 0)
+                {
+                    wstrFilename = wbuf;
+                }
+            }            
+
+            //put everything into a thread safe queue and pop them out in a different thread, thus minimising runtime costs
+            //m_pServer->m_pBase->Push(fni.Action, wstrFilename);
+
+            if (!fni.NextEntryOffset)
+            {
+                break;
+            }
+            pBase += fni.NextEntryOffset;
+        }
+    }
+    
 
     NativeFileSystemWatcher::~NativeFileSystemWatcher()
     {

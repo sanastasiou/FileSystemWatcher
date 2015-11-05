@@ -41,6 +41,30 @@ namespace File
         virtual ~FileSystemWatcherBase()
         {
         }
+
+        // The dwSize is the actual number of bytes sent to the APC.
+        void BackupBuffer(DWORD dwSize)
+        {
+            // We could just swap back and forth between the two
+            // buffers, but this code is easier to understand and debug.
+            ::memcpy(_backupBuffer.data(), _buffer.data(), dwSize);
+        }
+
+        void BeginRead(::LPOVERLAPPED_COMPLETION_ROUTINE const notificationCallback, ::HANDLE const dirHandle);
+
+        ::HANDLE & GetDirHandle()
+        {
+            return _dirHandle;
+        }
+
+        ::HANDLE const & GetDirHandle()const
+        {
+            return _dirHandle;
+        }
+
+        virtual LPOVERLAPPED_COMPLETION_ROUTINE GetNotificationRoutine()const = 0;
+
+        virtual void ProcessNotification() = 0;
     protected:
         FileSystemWatcherBase( FileSystemString const & dir,
                                ::DWORD changeFlags,
@@ -71,16 +95,6 @@ namespace File
             pWatcher->BeginRead(pWatcher->GetNotificationRoutine(), pWatcher->GetDirHandle());
         }
 
-        ::HANDLE & GetDirHandle()
-        {
-            return _dirHandle;
-        }
-
-        ::HANDLE const & GetDirHandle()const
-        {
-            return _dirHandle;
-        }
-
         void Run()
         {
             while (!_terminate)
@@ -94,10 +108,6 @@ namespace File
         {
             _terminate = true;
         }
-
-        virtual LPOVERLAPPED_COMPLETION_ROUTINE GetNotificationRoutine()const = 0;
-
-        void BeginRead(::LPOVERLAPPED_COMPLETION_ROUTINE const notificationCallback, ::HANDLE const dirHandle);
 
         DirectoryInfo _directoryInfo;                   //!< Simple struct with all relevant information for directory changes.
         bool _terminate;                                //!< Notify wathcer to terminate dir observation.
@@ -132,7 +142,7 @@ namespace File
         // This call needs to be reissued after every APC.
         (void)::ReadDirectoryChangesW(
             dirHandle,                           // handle to directory
-            &_buffer[0],                         // read results buffer
+            _buffer.data(),                      // read results buffer
             _buffer.size(),                      // length of buffer
             _directoryInfo._watchSubDirectories, // monitoring option
             _directoryInfo._changeFlags,         // filter conditions

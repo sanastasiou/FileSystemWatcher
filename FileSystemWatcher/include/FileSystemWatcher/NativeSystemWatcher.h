@@ -52,6 +52,8 @@ namespace File
         virtual void RequestTermination();
 
         virtual LPOVERLAPPED_COMPLETION_ROUTINE GetNotificationRoutine()const;
+
+        virtual void ProcessNotification();
     private:
         static const ::DWORD NO_CHANGES = 0UL;
 
