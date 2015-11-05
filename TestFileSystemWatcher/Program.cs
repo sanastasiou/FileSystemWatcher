@@ -10,7 +10,7 @@ namespace TestFileSystemWatcher
     [TestFixture]
     public class FileSystemWatcherTests
     {
-        string _testFile = String.Empty;
+        string _testFile = string.Empty;
 
         private byte[] GetBytes(string str)
         {
@@ -44,18 +44,19 @@ namespace TestFileSystemWatcher
         [Test]
         public void SmokeTest()
         {
-            FileWatcher myWatcher = new FileWatcher( @"C:\Work\body_trunk",
+            try
+            {
+                FileWatcher myWatcher = new FileWatcher(@"C:\FooDirectoryLALALALALALALAWLWWLWLWL",
                                                      (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
                                                      true,
                                                      @"*.atm",
                                                      string.Empty);
-            try
-            {
-                //myWatcher.Dispose();
+
+                myWatcher.Dispose();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                System.Diagnostics.Trace.WriteLine(ex.Message);
             }
         }
 

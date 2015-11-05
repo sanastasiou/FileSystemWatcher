@@ -17,13 +17,13 @@
     <ClCompile Include="src\FileSystemWatcher\DelayedFileSystemWatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileSystemWatcher\FileSystemWatcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\FileSystemWatcher\NativeSystemWatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\FileSystemWatcher\EventRouter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileSystemWatcher\FileWatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -34,13 +34,13 @@
     <ClInclude Include="include\FileSystemWatcher\EventRouter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\FileSystemWatcher\FileSystemWatcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\FileSystemWatcher\IFileSystemWatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\FileSystemWatcher\NativeSystemWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileSystemWatcher\FileWatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

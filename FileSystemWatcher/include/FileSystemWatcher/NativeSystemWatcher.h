@@ -46,11 +46,18 @@ namespace File
 
         virtual void OnFileModified(const FileSystemString & strFileName)const;
     private:
-        Threading::Thread _watcherThread;
-        bool _isWatching;
+        static const ::DWORD NO_CHANGES = 0UL;
+
+        Threading::Thread _watcherThread; //!< Thread where dir changes are observed.
+        bool _isWatching;                 //!< Indicates whether the specified dir is being observed.
+        ::HANDLE _dirHandle;              //!< Handle to the observed directory.
+
+        bool StartDirectoryWatching();
+
+        void StopDirectoryWatching();
 
         static unsigned int DirectoryChangedCallback(void * data); //!< Called back when a change has been detected in the watched directory.
-    };
+    }; //class NativeFileSystemWatcher
 
     inline bool NativeFileSystemWatcher::IsWatching()const
     {

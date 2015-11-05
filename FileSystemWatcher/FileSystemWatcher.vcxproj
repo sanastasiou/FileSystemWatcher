@@ -94,13 +94,13 @@
     <ClCompile Include="src\FileSystemWatcher\AssemblyInfo.cpp" />
     <ClCompile Include="src\FileSystemWatcher\DelayedFileSystemWatcher.cpp" />
     <ClCompile Include="src\FileSystemWatcher\EventRouter.cpp" />
-    <ClCompile Include="src\FileSystemWatcher\FileSystemWatcher.cpp" />
+    <ClCompile Include="src\FileSystemWatcher\FileWatcher.cpp" />
     <ClCompile Include="src\FileSystemWatcher\NativeSystemWatcher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\FileSystemWatcher\DelayedFileSystemWatcher.h" />
     <ClInclude Include="include\FileSystemWatcher\EventRouter.h" />
-    <ClInclude Include="include\FileSystemWatcher\FileSystemWatcher.h" />
+    <ClInclude Include="include\FileSystemWatcher\FileWatcher.h" />
     <ClInclude Include="include\FileSystemWatcher\IFileSystemWatcher.h" />
     <ClInclude Include="include\FileSystemWatcher\NativeSystemWatcher.h" />
   </ItemGroup>

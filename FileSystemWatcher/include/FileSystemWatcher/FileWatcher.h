@@ -1,5 +1,5 @@
-#ifndef WINDOWS_FILE_FILESYSTEMWATCHER_H__
-#define WINDOWS_FILE_FILESYSTEMWATCHER_H__
+#ifndef WINDOWS_FILE_FILEWATCHER_H__
+#define WINDOWS_FILE_FILEWATCHER_H__
 
 #include "Windows.h"
 #include "FileSystemWatcher/IFileSystemWatcher.h"
@@ -53,8 +53,6 @@ namespace Clr
     private:
         File::DelayedFileSystemWatcher * _pDirectoryWatcher;
     };
-
-    //typedef ref class FileSystemWatcher<File::DelayedFileSystemWatcher> DelayedFileWatcher;
 } // namespace File
 } // namespace Windows
 

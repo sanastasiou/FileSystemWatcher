@@ -1,4 +1,4 @@
-#include "FileSystemWatcher/FileSystemWatcher.h"
+#include "FileSystemWatcher/FileWatcher.h"
 #include "FileSystemWatcher/NativeSystemWatcher.h"
 #include "FileSystemWatcher/EventRouter.h"
 #include <msclr/marshal_cppstd.h>

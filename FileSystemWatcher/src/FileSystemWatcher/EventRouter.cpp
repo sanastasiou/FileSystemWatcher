@@ -1,5 +1,5 @@
 #include "FileSystemWatcher/EventRouter.h"
-#include "FileSystemWatcher/FileSystemWatcher.h"
+#include "FileSystemWatcher/FileWatcher.h"
 
 namespace Windows
 {
