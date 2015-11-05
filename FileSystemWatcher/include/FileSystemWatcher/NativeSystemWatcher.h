@@ -19,7 +19,8 @@ namespace File
                                 ::BOOL const watchSubDir,
                                 IFileSystemWatcher const * const eventHandler,
                                 IFileSystemWatcher::FileSystemString includeFilter,
-                                IFileSystemWatcher::FileSystemString excludeFilter
+                                IFileSystemWatcher::FileSystemString excludeFilter,
+                                std::vector<::BYTE>::size_type const bufferSize
                                );
 
         virtual ~NativeFileSystemWatcher();
@@ -49,19 +50,20 @@ namespace File
         virtual void OnFileModified(const FileSystemString & strFileName)const;
     protected:
         virtual void RequestTermination();
+
+        virtual LPOVERLAPPED_COMPLETION_ROUTINE GetNotificationRoutine()const;
     private:
         static const ::DWORD NO_CHANGES = 0UL;
 
         Threading::Thread _watcherThread; //!< Thread where dir changes are observed.
         bool _isWatching;                 //!< Indicates whether the specified dir is being observed.
-        ::HANDLE _dirHandle;              //!< Handle to the observed directory.
         Threading::Mutex _addDirLock;     //!< Mutex when adding directories to watch.        
 
         bool StartDirectoryWatching();
 
         void StopDirectoryWatching();
 
-        static unsigned int StartDirectoryObservation(void * data); //!< Called back when a change has been detected in the watched directory.
+        static void WINAPI DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped );
     }; //class NativeFileSystemWatcher
 
     inline bool NativeFileSystemWatcher::IsWatching()const

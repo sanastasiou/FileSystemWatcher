@@ -34,6 +34,8 @@ namespace Clr
         {
             ::delete _pEventRouter;
         }
+
+        static const std::vector<::BYTE>::size_type STANDARD_BUFFER_SIZE = 65535U;
     protected:
         EventRouter * _pEventRouter;
     };
@@ -41,7 +43,7 @@ namespace Clr
     public ref class FileWatcher : public FileWatcherBase
     {
     public:
-        FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude);
+        FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, std::vector<::BYTE>::size_type bufferSize);
 
         bool IsWatching();
 

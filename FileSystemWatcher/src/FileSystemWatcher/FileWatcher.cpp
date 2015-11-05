@@ -11,7 +11,7 @@ namespace Windows
 {
 namespace Clr
 {
-    FileWatcher::FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude) :
+    FileWatcher::FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, std::vector<::BYTE>::size_type bufferSize) :
         FileWatcherBase(new EventRouter(this)),
         _pDirectoryWatcher(nullptr)
     {
@@ -20,7 +20,8 @@ namespace Clr
                                                                 includeSubDir,
                                                                 _pEventRouter, 
                                                                 marshal_as<File::IFileSystemWatcher::FileSystemString>(include),
-                                                                marshal_as<File::IFileSystemWatcher::FileSystemString>(exclude)
+                                                                marshal_as<File::IFileSystemWatcher::FileSystemString>(exclude),
+                                                                bufferSize
                                                               );
     }
 

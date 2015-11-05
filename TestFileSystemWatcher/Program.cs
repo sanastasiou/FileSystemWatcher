@@ -48,7 +48,8 @@ namespace TestFileSystemWatcher
                                                  (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
                                                  true,
                                                  @"*.atm",
-                                                 string.Empty);
+                                                 string.Empty,
+                                                 FileWatcher.STANDARD_BUFFER_SIZE);
 
             myWatcher.Dispose();
         }
@@ -60,7 +61,8 @@ namespace TestFileSystemWatcher
                                                  (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
                                                  true,
                                                  @"*.atm",
-                                                 string.Empty);
+                                                 string.Empty,
+                                                 FileWatcher.STANDARD_BUFFER_SIZE);
 
             Assert.IsFalse(myWatcher.IsWatching());
             myWatcher.Dispose();
@@ -74,44 +76,45 @@ namespace TestFileSystemWatcher
                                                  (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
                                                  true,
                                                  @"*.atm",
-                                                 string.Empty);
+                                                 string.Empty,
+                                                 FileWatcher.STANDARD_BUFFER_SIZE);
 
             Assert.IsTrue(myWatcher.IsWatching());
             myWatcher.Dispose();
         }
 
-        //[Test]
-        //public void FileModificationTest()
-        //{
-        //    FileSystemWatcher myWatcher = new FileSystemWatcher(System.IO.Path.GetDirectoryName(_testFile),
-        //                                                        false,
-        //                                                        @"*.txt",
-        //                                                        String.Empty,
-        //                                                        (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
-        //                                                        true);
-        //    try
-        //    {
-        //        bool notificationFired = false;
-        //        EventHandler<System.IO.FileSystemEventArgs> handler = (s, e) => { notificationFired = true; };
-        //        myWatcher.Changed += handler;
-        //
-        //        //modify file
-        //        using (var aFile = System.IO.File.OpenWrite(_testFile))
-        //        {
-        //            var aBytesToWrite = GetBytes("Some extra stuff");
-        //            aFile.Write(aBytesToWrite, 0, aBytesToWrite.Length);
-        //        }
-        //
-        //        System.Threading.Thread.Sleep(5000);
-        //
-        //        myWatcher.Changed -= handler;
-        //        myWatcher.Dispose();
-        //        Assert.True(notificationFired);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-        //}
+        [Test]
+        public void FileModificationTest()
+        {
+            FileWatcher myWatcher = new FileWatcher(System.IO.Path.GetDirectoryName(_testFile),
+                                                    (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                    true,
+                                                    @"*.atm",
+                                                    string.Empty,
+                                                    FileWatcher.STANDARD_BUFFER_SIZE);
+            try
+            {
+                bool notificationFired = false;
+                EventHandler<System.IO.FileSystemEventArgs> handler = (s, e) => { notificationFired = true; };
+                myWatcher.Changed += handler;
+        
+                //modify file
+                using (var aFile = System.IO.File.OpenWrite(_testFile))
+                {
+                    var aBytesToWrite = GetBytes("Some extra stuff");
+                    aFile.Write(aBytesToWrite, 0, aBytesToWrite.Length);
+                }
+        
+                System.Threading.Thread.Sleep(5000);
+        
+                myWatcher.Changed -= handler;
+                myWatcher.Dispose();
+                Assert.True(notificationFired);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }
