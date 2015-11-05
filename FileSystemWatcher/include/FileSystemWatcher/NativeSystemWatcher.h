@@ -3,7 +3,9 @@
 
 #include "WindowsBase/File.h"
 #include "WindowsBase/Thread.h"
+#include "WindowsBase/Mutex.h"
 #include "IFileSystemWatcher.h"
+#include <vector>
 
 namespace Windows
 {
@@ -42,21 +44,24 @@ namespace File
 
         IFileSystemWatcher::FileSystemString GetExcludeFilter()const;
 
-        bool IsWatching()const;
+        virtual bool IsWatching()const;
 
         virtual void OnFileModified(const FileSystemString & strFileName)const;
+    protected:
+        virtual void RequestTermination();
     private:
         static const ::DWORD NO_CHANGES = 0UL;
 
         Threading::Thread _watcherThread; //!< Thread where dir changes are observed.
         bool _isWatching;                 //!< Indicates whether the specified dir is being observed.
         ::HANDLE _dirHandle;              //!< Handle to the observed directory.
+        Threading::Mutex _addDirLock;     //!< Mutex when adding directories to watch.        
 
         bool StartDirectoryWatching();
 
         void StopDirectoryWatching();
 
-        static unsigned int DirectoryChangedCallback(void * data); //!< Called back when a change has been detected in the watched directory.
+        static unsigned int StartDirectoryObservation(void * data); //!< Called back when a change has been detected in the watched directory.
     }; //class NativeFileSystemWatcher
 
     inline bool NativeFileSystemWatcher::IsWatching()const
@@ -66,22 +71,22 @@ namespace File
 
     inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetExcludeFilter()const
     {
-        return _excludeFilter;
+        return _directoryInfo._excludeFilter;
     }
 
     inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetIncludeFilter()const
     {
-        return _includeFilter;
+        return _directoryInfo._includeFilter;
     }
 
     inline ::DWORD  NativeFileSystemWatcher::GetFlags()const
     {
-        return _changeFlags;
+        return _directoryInfo._changeFlags;
     }
 
     inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetDir()const
     {
-        return _dir;
+        return _directoryInfo._dir;
     }
 
 

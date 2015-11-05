@@ -42,16 +42,24 @@ namespace Clr
     {
     public:
         FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude);
+
+        bool IsWatching();
+
+        ~FileWatcher();
+
     private:
-        File::NativeFileSystemWatcher * _pDirectoryWatcher;
+        File::FileSystemWatcherBase * _pDirectoryWatcher;
     };
 
     public ref class DelayedFileWatcher : public FileWatcherBase
     {
     public:
         DelayedFileWatcher(String^ dir, String^ include, String^ exclude, ::DWORD filterFlags, bool includeSubDir, ::DWORD const delay);
+
+        ~DelayedFileWatcher();
+
     private:
-        File::DelayedFileSystemWatcher * _pDirectoryWatcher;
+        File::FileSystemWatcherBase * _pDirectoryWatcher;
     };
 } // namespace File
 } // namespace Windows

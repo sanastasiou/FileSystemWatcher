@@ -45,3 +45,4 @@ packages/
 *.map
 VisualStudio2015_Debug/
 VisualStudio2015_Release/
+*.asm

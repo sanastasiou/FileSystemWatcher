@@ -44,20 +44,40 @@ namespace TestFileSystemWatcher
         [Test]
         public void SmokeTest()
         {
-            try
-            {
-                FileWatcher myWatcher = new FileWatcher(@"C:\FooDirectoryLALALALALALALAWLWWLWLWL",
-                                                     (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
-                                                     true,
-                                                     @"*.atm",
-                                                     string.Empty);
+            FileWatcher myWatcher = new FileWatcher(@"C:\FooDirectoryLALALALALALALAWLWWLWLWL",
+                                                 (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                 true,
+                                                 @"*.atm",
+                                                 string.Empty);
 
-                myWatcher.Dispose();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Trace.WriteLine(ex.Message);
-            }
+            myWatcher.Dispose();
+        }
+
+        [Test]
+        public void EnsureNonExistantDirIsNotWatched()
+        {
+            FileWatcher myWatcher = new FileWatcher(@"",
+                                                 (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                 true,
+                                                 @"*.atm",
+                                                 string.Empty);
+
+            Assert.IsFalse(myWatcher.IsWatching());
+            myWatcher.Dispose();
+        }
+
+        [Test]
+        public void EnsureExistantDirIsWatched()
+        {
+            string aBinDir = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            FileWatcher myWatcher = new FileWatcher(aBinDir,
+                                                 (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                 true,
+                                                 @"*.atm",
+                                                 string.Empty);
+
+            Assert.IsTrue(myWatcher.IsWatching());
+            myWatcher.Dispose();
         }
 
         //[Test]

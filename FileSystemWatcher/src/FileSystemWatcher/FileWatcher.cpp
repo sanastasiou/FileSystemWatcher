@@ -24,6 +24,11 @@ namespace Clr
                                                               );
     }
 
+    bool FileWatcher::IsWatching()
+    {
+        return _pDirectoryWatcher->IsWatching();
+    }
+
     DelayedFileWatcher::DelayedFileWatcher(String^ dir, String^ include, String^ exclude, ::DWORD filterFlags, bool includeSubDir, ::DWORD const delay) :
         FileWatcherBase(new EventRouter(this)),
         _pDirectoryWatcher(nullptr)
@@ -33,6 +38,17 @@ namespace Clr
 
     void FileWatcherBase::OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName)
     {
+
+    }
+
+    FileWatcher::~FileWatcher()
+    {
+        ::delete _pDirectoryWatcher;
+    }
+
+    DelayedFileWatcher::~DelayedFileWatcher()
+    {
+        ::delete _pDirectoryWatcher;
     }
 
     /*void FileSystemWatcher::RestartWatching()

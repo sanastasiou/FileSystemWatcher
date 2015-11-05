@@ -11,7 +11,7 @@ namespace File
 {
     class DelayedFileSystemWatcher : public FileSystemWatcherBase
     {
-
+        virtual ~DelayedFileSystemWatcher();
     }; // class DelayedFileSystemWatcher
 } // namespace File
 } // namespace Windows

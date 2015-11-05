@@ -7,7 +7,8 @@ namespace Threading
 
 Thread::Thread(Callback callback) :
     _threadHandle(NULL),
-    _Callback(callback)
+    _callback(callback),
+    _threadId(0U)
 {
 }
 
@@ -29,7 +30,7 @@ unsigned int Thread::DefaultFunc(void* /* data */)
 
 bool Thread::Start(void* data)
 {
-    if (_threadHandle != NULL)
+    if (IsStarted())
     {
         //already started
         return false;
@@ -37,15 +38,27 @@ bool Thread::Start(void* data)
 
     StateObject * aThreadProcParam = new StateObject{ this, data };
 
-    _threadHandle = ::CreateThread(NULL, 0, ThreadProc, aThreadProcParam, 0, NULL);
+    _threadHandle = ::CreateThread(NULL, 0, ThreadProc, aThreadProcParam, 0, &_threadId);
     
     return (_threadHandle != NULL);
+}
+
+bool Thread::IsStarted()const
+{
+    return (_threadHandle != NULL);
+}
+
+::DWORD Thread::GetThreadId()const
+{
+    return _threadId;
 }
 
 bool Thread::Stop(unsigned int* result /* = 0 */, unsigned int timeout /* = INFINITE */)
 {
     if (_threadHandle == NULL)
+    {
         return false;
+    }
 
     bool aSuccess = true;
     ::DWORD waitResult = ::WaitForSingleObject(_threadHandle, timeout);
@@ -73,6 +86,7 @@ bool Thread::Stop(unsigned int* result /* = 0 */, unsigned int timeout /* = INFI
     {
         ::CloseHandle(_threadHandle);
         _threadHandle = NULL;
+        _threadId = 0U;
     }
 
     return 0;
@@ -83,9 +97,9 @@ bool Thread::Stop(unsigned int* result /* = 0 */, unsigned int timeout /* = INFI
     StateObject * tpp = reinterpret_cast<StateObject*>(param);
     ::DWORD result;
 
-    if (tpp->thread->_Callback != NULL)
+    if (tpp->thread->_callback != NULL)
     {
-        result = tpp->thread->_Callback(tpp->param);
+        result = tpp->thread->_callback(tpp->param);
     }
     else
     {

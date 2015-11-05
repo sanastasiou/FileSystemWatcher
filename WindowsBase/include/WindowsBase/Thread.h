@@ -28,16 +28,20 @@ public:
 
     bool Stop(unsigned int* result = 0, unsigned int const timeout = INFINITE);
 
+    bool IsStarted()const;
+
+    ::DWORD GetThreadId()const;
+
+    operator ::HANDLE() const { return _threadHandle; }
 protected:
-    //! Main function of the thread, if _Callback is null
     virtual unsigned int DefaultFunc(void * data);
 
 private:
     ::HANDLE _threadHandle;
-    Callback _Callback;
+    Callback _callback;
+    ::DWORD _threadId;
 
-    //! Static helper function for the operating system that calls the thread main function of the Thread instance.
-    static ::DWORD WINAPI ThreadProc(::LPVOID param);
+    static  ::DWORD WINAPI ThreadProc(::LPVOID param);
 
     struct StateObject
     {
@@ -45,7 +49,6 @@ private:
         void* param;
     };
 };
-
 
 } // namespace Threading
 } // namespace Windows
