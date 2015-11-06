@@ -43,5 +43,11 @@
     <ClInclude Include="include\FileSystemWatcher\FileWatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\FileSystemWatcher\ConqurrentQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -35,6 +35,7 @@ namespace File
             {
                 //listen for modifications
                 ::QueueUserAPC(FileSystemWatcherBase::AddDirectoryProc, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
+                StartPoppingEvents();
             }
         }
     }
@@ -62,7 +63,7 @@ namespace File
     void WINAPI NativeFileSystemWatcher::DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped)
     {
         FileSystemWatcherBase* pBlock = reinterpret_cast<FileSystemWatcherBase*>(lpOverlapped->hEvent);
-        System::Diagnostics::Trace::WriteLine(dwErrorCode);
+
         if (dwErrorCode == ERROR_OPERATION_ABORTED)
         {
             System::Diagnostics::Trace::WriteLine("omfg!!!");
@@ -102,7 +103,7 @@ namespace File
 
     void NativeFileSystemWatcher::ProcessNotification()
     {
-        BYTE* pBase = _backupBuffer.data();
+        auto pBase = _backupBuffer.data();
 
         for (;;)
         {
@@ -135,7 +136,7 @@ namespace File
             }            
 
             //put everything into a thread safe queue and pop them out in a different thread, thus minimising runtime costs
-            //m_pServer->m_pBase->Push(fni.Action, wstrFilename);
+            _eventQueue.push(std::make_pair(wstrFilename, fni.Action));
 
             if (!fni.NextEntryOffset)
             {
@@ -164,11 +165,14 @@ namespace File
         if (!IsWatching())
         {
             _isWatching = StartDirectoryWatching();
+            StartPoppingEvents();
         }
     }
 
     void NativeFileSystemWatcher::StopWatching()
     {
+        //stop event publishing
+        StopPopping();
         ::QueueUserAPC(FileSystemWatcherBase::TerminateProc, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
         _watcherThread.Stop();
         _isWatching = false;

@@ -35,7 +35,7 @@ namespace Clr
             ::delete _pEventRouter;
         }
 
-        static const std::vector<::BYTE>::size_type STANDARD_BUFFER_SIZE = 65535U;
+        static const std::vector< ::BYTE >::size_type STANDARD_BUFFER_SIZE = 65535U;
     protected:
         EventRouter * _pEventRouter;
     };

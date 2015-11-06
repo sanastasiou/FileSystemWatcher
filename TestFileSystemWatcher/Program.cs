@@ -95,10 +95,15 @@ namespace TestFileSystemWatcher
             try
             {
                 bool notificationFired = false;
-                EventHandler<System.IO.FileSystemEventArgs> handler = (s, e) => { notificationFired = true; };
+                int count = 0;
+                EventHandler<System.IO.FileSystemEventArgs> handler = (s, e) => 
+                {
+                    notificationFired = true;
+                    ++count;
+                };
                 myWatcher.Changed += handler;
 
-                for (int i = 0; i < 100; ++i)
+                for (int i = 0; i < 5; ++i)
                 {
 
                     //modify file
@@ -108,12 +113,13 @@ namespace TestFileSystemWatcher
                         aFile.Write(aBytesToWrite, 0, aBytesToWrite.Length);
                     }
 
-                    System.Threading.Thread.Sleep(5000);
+                    System.Threading.Thread.Sleep(1000);
                 }
         
+                Assert.True(notificationFired);
+                Assert.True(count == 5);
                 myWatcher.Changed -= handler;
                 myWatcher.Dispose();
-                Assert.True(notificationFired);
             }
             catch (Exception ex)
             {

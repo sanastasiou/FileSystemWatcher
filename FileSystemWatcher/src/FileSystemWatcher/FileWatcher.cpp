@@ -2,10 +2,7 @@
 #include "FileSystemWatcher/NativeSystemWatcher.h"
 #include "FileSystemWatcher/EventRouter.h"
 #include <msclr/marshal_cppstd.h>
-
-using namespace System;
-using namespace System::Runtime::InteropServices;
-using namespace msclr::interop;
+#include "WindowsBase/Base.h"
 
 namespace Windows
 {
@@ -15,12 +12,12 @@ namespace Clr
         FileWatcherBase(new EventRouter(this)),
         _pDirectoryWatcher(nullptr)
     {
-        _pDirectoryWatcher = new File::NativeFileSystemWatcher( marshal_as<File::IFileSystemWatcher::FileSystemString>(dir), 
+        _pDirectoryWatcher = new File::NativeFileSystemWatcher( msclr::interop::marshal_as<File::IFileSystemWatcher::FileSystemString>(dir),
                                                                 filterFlags, 
                                                                 includeSubDir,
                                                                 _pEventRouter, 
-                                                                marshal_as<File::IFileSystemWatcher::FileSystemString>(include),
-                                                                marshal_as<File::IFileSystemWatcher::FileSystemString>(exclude),
+                                                                msclr::interop::marshal_as<File::IFileSystemWatcher::FileSystemString>(include),
+                                                                msclr::interop::marshal_as<File::IFileSystemWatcher::FileSystemString>(exclude),
                                                                 bufferSize
                                                               );
     }
@@ -39,7 +36,9 @@ namespace Clr
 
     void FileWatcherBase::OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName)
     {
-
+        System::String^ aClrStrFileName(msclr::interop::marshal_as<System::String^>(strFileName));
+        System::String^ aClrDir(msclr::interop::marshal_as<System::String^>(Utilities::File::GetDirectoryFromFilePath(strFileName.c_str())));
+        Changed(this, gcnew FileSystemEventArgs(System::IO::WatcherChangeTypes::Changed, aClrDir, aClrStrFileName));
     }
 
     FileWatcher::~FileWatcher()
