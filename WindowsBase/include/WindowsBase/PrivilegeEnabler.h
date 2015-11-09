@@ -19,14 +19,14 @@ namespace Utilities
     class WINDOWS_UTILITIES_PRIVILEGE_ENABLER_API PrivilegeEnabler
     {
     public:
-        static void Initialize(std::vector<::LPCTSTR> const & privileges);
+        static void Initialize(std::vector<std::wstring> const & privileges);
 
         ~PrivilegeEnabler();
     private:
         static PrivilegeEnabler * _pInstance;
         static Windows::Threading::Mutex _mutex;
 
-        PrivilegeEnabler(std::vector<::LPCTSTR> const & privileges);
+        PrivilegeEnabler(std::vector<std::wstring> const & privileges);
 
         ::BOOL EnablePrivilege(::LPCTSTR pszPrivName, ::BOOL fEnable = TRUE);
     };

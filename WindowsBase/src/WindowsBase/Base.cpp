@@ -1,6 +1,7 @@
 #include "WindowsBase/Base.h"
 #include "Windows.h"
 #include <string>
+#include "WindowsBase/File.h"
 
 namespace Windows
 {
@@ -221,6 +222,16 @@ namespace Common
         if (aFileAttributes == INVALID_FILE_ATTRIBUTES) return false;
         if (aFileAttributes & FILE_ATTRIBUTE_DIRECTORY) return false;
         return true;
+    }
+
+    bool Base::MakeDir(const char* dir, LPSECURITY_ATTRIBUTES attributes /*= nullptr*/)
+    {
+        return MakeDir(Utilities::String::string_cast<std::wstring>(dir).c_str());
+    }
+
+    bool Base::MakeDir(const wchar_t * dir, LPSECURITY_ATTRIBUTES attributes /*= nullptr*/)
+    {
+        return (::CreateDirectoryW(dir, attributes) != FALSE);
     }
 
 } // namespace Common

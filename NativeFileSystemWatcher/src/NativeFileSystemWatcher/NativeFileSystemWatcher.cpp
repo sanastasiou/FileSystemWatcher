@@ -1,26 +1,27 @@
-#include "FileSystemWatcher/NativeSystemWatcher.h"
+#include "NativeFileSystemWatcher/NativeFileSystemWatcher.h"
 #include "WindowsBase/PrivilegeEnabler.h"
 #include <vector>
+#include <string>
 #include "WindowsBase/File.h"
-#include <msclr/marshal_cppstd.h>
+//#include <msclr/marshal_cppstd.h>
 #include "atlpath.h"
 
 namespace Windows
 {
 namespace File
 {
-    NativeFileSystemWatcher::NativeFileSystemWatcher( IFileSystemWatcher::FileSystemString const & dir,
-                                                      ::DWORD changeFlags,
-                                                      ::BOOL const watchSubDir,
-                                                      IFileSystemWatcher const * const eventHandler,
-                                                      IFileSystemWatcher::FileSystemString includeFilter,
-                                                      IFileSystemWatcher::FileSystemString excludeFilter,
-                                                      std::vector<::BYTE>::size_type const bufferSize  ) :
+    NativeFileSystemWatcher::NativeFileSystemWatcher(IFileSystemWatcher::FileSystemString const & dir,
+        ::DWORD changeFlags,
+        ::BOOL const watchSubDir,
+        IFileSystemWatcher * const eventHandler,
+        IFileSystemWatcher::FileSystemString includeFilter,
+        IFileSystemWatcher::FileSystemString excludeFilter,
+        std::vector<::BYTE>::size_type const bufferSize) :
         FileSystemWatcherBase(dir, changeFlags, watchSubDir, eventHandler, includeFilter, excludeFilter, bufferSize),
         _isWatching(false),
         _watcherThread(FileSystemWatcherBase::ThreadStartProc)
     {
-        std::vector<::LPCTSTR> _privileges(3);
+        std::vector<std::wstring> _privileges;
         _privileges.push_back(SE_BACKUP_NAME);
         _privileges.push_back(SE_RESTORE_NAME);
         _privileges.push_back(SE_CHANGE_NOTIFY_NAME);
@@ -43,14 +44,14 @@ namespace File
     bool NativeFileSystemWatcher::StartDirectoryWatching()
     {
         //open the directory to watch....
-        FileSystemWatcherBase::GetDirHandle() = ::CreateFileW( FileSystemWatcherBase::_directoryInfo._dir.c_str(),
-                                                               FILE_LIST_DIRECTORY,
-                                                               FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, //<-- removing FILE_SHARE_DELETE prevents the user or someone else from renaming or deleting the watched directory.
-                                                               NULL, //security attributes
-                                                               OPEN_EXISTING,
-                                                               FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,//<- the required priviliges for this flag are: SE_BACKUP_NAME and SE_RESTORE_NAME.
-                                                               NULL
-                                                             );
+        FileSystemWatcherBase::GetDirHandle() = ::CreateFileW(FileSystemWatcherBase::_directoryInfo._dir.c_str(),
+            FILE_LIST_DIRECTORY,
+            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, //<-- removing FILE_SHARE_DELETE prevents the user or someone else from renaming or deleting the watched directory.
+            NULL, //security attributes
+            OPEN_EXISTING,
+            FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,//<- the required priviliges for this flag are: SE_BACKUP_NAME and SE_RESTORE_NAME.
+            NULL
+            );
         if (_dirHandle == INVALID_HANDLE_VALUE)
         {
             return false;
@@ -66,7 +67,6 @@ namespace File
 
         if (dwErrorCode == ERROR_OPERATION_ABORTED)
         {
-            System::Diagnostics::Trace::WriteLine("omfg!!!");
             //send error notification to shut down this watcher
             return;
         }
@@ -91,7 +91,7 @@ namespace File
         // Get the new read issued as fast as possible. The documentation
         // says that the original OVERLAPPED structure will not be used
         // again once the completion routine is called.
-        pBlock->BeginRead(pBlock->GetNotificationRoutine(), pBlock->GetDirHandle() );
+        pBlock->BeginRead(pBlock->GetNotificationRoutine(), pBlock->GetDirHandle());
 
         pBlock->ProcessNotification();
     }
@@ -103,7 +103,7 @@ namespace File
 
     void NativeFileSystemWatcher::ProcessNotification()
     {
-        auto pBase = _backupBuffer.data();
+        auto pBase = GetBackUpBuffer().data();
 
         for (;;)
         {
@@ -111,7 +111,7 @@ namespace File
 
             std::wstring wstrFilename(fni.FileName, fni.FileNameLength / sizeof(wchar_t));
             // Handle a trailing backslash, such as for a root directory.
-            if ( wstrFilename.substr(wstrFilename.length() - 1, 1) != std::wstring(L"\\"))
+            if (wstrFilename.substr(wstrFilename.length() - 1, 1) != std::wstring(L"\\"))
             {
                 wstrFilename = FileSystemWatcherBase::_directoryInfo._dir + L"\\" + wstrFilename;
             }
@@ -124,7 +124,7 @@ namespace File
             LPCWSTR wszFilename = ::PathFindFileNameW(wstrFilename.c_str());
             int len = lstrlenW(wszFilename);
             // The maximum length of an 8.3 filename is twelve, including the dot.
-            if (len <= 12 && wcschr(wszFilename, L'~'))
+            if (len <= 12 && ::wcschr(wszFilename, L'~'))
             {
                 // Convert to the long filename form. Unfortunately, this
                 // does not work for deletions, so it's an imperfect fix.
@@ -133,10 +133,22 @@ namespace File
                 {
                     wstrFilename = wbuf;
                 }
-            }            
+            }
 
-            //put everything into a thread safe queue and pop them out in a different thread, thus minimising runtime costs
-            _eventQueue.push(std::make_pair(wstrFilename, fni.Action));
+            //if file was renamed just let it through, maybe it is renamed to something which doesn't match our filters
+            if (fni.Action == FILE_ACTION_RENAMED_NEW_NAME)
+            {
+                //put everything into a thread safe queue and pop them out in a different thread, thus minimising runtime costs
+                GetEventQueue().push(std::make_pair(wstrFilename, fni.Action));
+            }
+            else
+            {
+                //check filters and only push it this thing matches
+                if(IsFileIncluded(wstrFilename) && !IsFileExcluded(wstrFilename))
+                {
+                    GetEventQueue().push(std::make_pair(wstrFilename, fni.Action));
+                }
+            }
 
             if (!fni.NextEntryOffset)
             {
@@ -145,7 +157,7 @@ namespace File
             pBase += fni.NextEntryOffset;
         }
     }
-    
+
 
     NativeFileSystemWatcher::~NativeFileSystemWatcher()
     {
@@ -173,7 +185,7 @@ namespace File
     {
         //stop event publishing
         StopPopping();
-        ::QueueUserAPC(FileSystemWatcherBase::TerminateProc, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
+        ::QueueUserAPC(FileSystemWatcherBase::TerminateWatching, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
         _watcherThread.Stop();
         _isWatching = false;
     }
@@ -198,9 +210,24 @@ namespace File
 
     }
 
-    void NativeFileSystemWatcher::OnFileModified(const FileSystemString & strFileName)const
+    void NativeFileSystemWatcher::OnFileModified(const FileSystemString & strFileName)
     {
         _directoryInfo._eventHandler->OnFileModified(strFileName);
+    }
+
+    void NativeFileSystemWatcher::OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName)
+    {
+        _directoryInfo._eventHandler->OnFileRenamed(newFileName, oldFileName);
+    }
+
+    void NativeFileSystemWatcher::OnFileRemoved(const FileSystemString & strFileName)
+    {
+        _directoryInfo._eventHandler->OnFileRemoved(strFileName);
+    }
+
+    void NativeFileSystemWatcher::OnFileAdded(const FileSystemString & strFileName)
+    {
+        _directoryInfo._eventHandler->OnFileAdded(strFileName);
     }
 } // namespace File
 } // namespace Windows

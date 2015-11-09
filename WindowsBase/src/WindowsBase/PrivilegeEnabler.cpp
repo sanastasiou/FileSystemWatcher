@@ -8,24 +8,25 @@ namespace Utilities
     PrivilegeEnabler * PrivilegeEnabler::_pInstance = nullptr;
     Threading::Mutex PrivilegeEnabler::_mutex;
 
-    void PrivilegeEnabler::Initialize(std::vector<::LPCTSTR> const & privileges)
+    void PrivilegeEnabler::Initialize(std::vector<std::wstring> const & privileges)
     {
         if (_pInstance == nullptr)
         {
             _mutex.Lock();
-            if (_pInstance == nullptr) {
+            if (_pInstance == nullptr)
+            {
                 _pInstance = new PrivilegeEnabler(privileges);
             }
         }
     }
     
-    PrivilegeEnabler::PrivilegeEnabler(std::vector<::LPCTSTR> const & privileges)
+    PrivilegeEnabler::PrivilegeEnabler(std::vector<std::wstring> const & privileges)
     {
         for (auto i = privileges.begin(); i != privileges.end(); ++i)
         {
-            if (EnablePrivilege(*i, TRUE) == FALSE)
+            if (EnablePrivilege((*i).c_str(), TRUE) == FALSE)
             {
-                ATLTRACE(_T("Unable to enable privilege: %s    --    GetLastError(): %d\n"), *i, ::GetLastError());
+                ATLTRACE(_T("Unable to enable privilege: %s    --    GetLastError(): %d\n"), (*i).c_str(), ::GetLastError());
                 ATLTRACE(_T("File: %s Line: %d\n"), _T(__FILE__), __LINE__);
             }
         }

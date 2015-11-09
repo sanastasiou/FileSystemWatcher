@@ -2,11 +2,8 @@
 #define WINDOWS_FILE_CONQURRENT_QUEUE_H__
 
 #include <queue>
-
-#pragma unmanaged
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
-#pragma managed
 
 namespace boost {
 namespace detail {
@@ -41,7 +38,7 @@ namespace File
                 std::queue<Data> emptyQueue;
                 std::swap(_queue, emptyQueue);
                 lock.unlock();
-                _conditionVariable.notify_one();
+                _conditionVariable.notify_all();
             }
 
 

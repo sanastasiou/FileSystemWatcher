@@ -7,6 +7,8 @@
 #define WINDOWS_COMMON_BASE_API __declspec (dllimport)
 #endif
 
+#include "Windows.h"
+
 namespace Windows
 {
 namespace Common
@@ -29,6 +31,10 @@ namespace Common
         static bool FileExist(const char *file);
 
         static bool FileExist(const wchar_t * file);
+
+        static bool MakeDir(const char* dir, LPSECURITY_ATTRIBUTES attributes = nullptr);
+
+        static bool MakeDir(const wchar_t * dir, LPSECURITY_ATTRIBUTES attributes = nullptr);
     };
 
 } // namespace Common

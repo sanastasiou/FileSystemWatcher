@@ -1,6 +1,12 @@
 #ifndef WINDOWS_FILE_NATIVESYSTEMWATCHER_H__
 #define WINDOWS_FILE_NATIVESYSTEMWATCHER_H__
 
+#if defined(WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_DLL_EXPORTS)
+#define WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API __declspec (dllexport)
+#else
+#define WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API __declspec (dllimport)
+#endif
+
 #include "WindowsBase/File.h"
 #include "WindowsBase/Thread.h"
 #include "WindowsBase/Mutex.h"
@@ -14,16 +20,16 @@ namespace File
     class NativeFileSystemWatcher : public FileSystemWatcherBase
     {
     public:
-        NativeFileSystemWatcher(IFileSystemWatcher::FileSystemString const & dir, 
-                                ::DWORD changeFlags,
-                                ::BOOL const watchSubDir,
-                                IFileSystemWatcher const * const eventHandler,
-                                IFileSystemWatcher::FileSystemString includeFilter,
-                                IFileSystemWatcher::FileSystemString excludeFilter,
-                                std::vector<::BYTE>::size_type const bufferSize
-                               );
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API NativeFileSystemWatcher(IFileSystemWatcher::FileSystemString const & dir,
+                                                                         ::DWORD changeFlags,
+                                                                         ::BOOL const watchSubDir,
+                                                                         IFileSystemWatcher * const eventHandler,
+                                                                         IFileSystemWatcher::FileSystemString includeFilter,
+                                                                         IFileSystemWatcher::FileSystemString excludeFilter,
+                                                                         std::vector<::BYTE>::size_type const bufferSize
+                                                                        );
 
-        virtual ~NativeFileSystemWatcher();
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual ~NativeFileSystemWatcher();
 
         void StartWatching();
 
@@ -45,9 +51,15 @@ namespace File
 
         IFileSystemWatcher::FileSystemString GetExcludeFilter()const;
 
-        virtual bool IsWatching()const;
+        bool IsWatching()const;
 
-        virtual void OnFileModified(const FileSystemString & strFileName)const;
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileModified(const FileSystemString & strFileName);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRemoved(const FileSystemString & strFileName);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileAdded(const FileSystemString & strFileName);
     protected:
         virtual void RequestTermination();
 
@@ -62,8 +74,6 @@ namespace File
         Threading::Mutex _addDirLock;     //!< Mutex when adding directories to watch.        
 
         bool StartDirectoryWatching();
-
-        void StopDirectoryWatching();
 
         static void WINAPI DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped );
     }; //class NativeFileSystemWatcher

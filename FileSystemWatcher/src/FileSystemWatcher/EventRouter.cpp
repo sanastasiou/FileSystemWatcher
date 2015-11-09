@@ -10,7 +10,7 @@ namespace Clr
     {
     }
 
-    void EventRouter::OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName)const
+    void EventRouter::OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName)
     {
         _managedFileSystemWatcher->OnFileModified(strFileName);
     }

@@ -1,8 +1,7 @@
 #ifndef WINDOWS_CLR_EVENT_ROUTER_H__
 #define WINDOWS_CLR_EVENT_ROUTER_H__
 
-#include "IFileSystemWatcher.h"
-//#include "FileSystemWatcher.h"
+#include "NativeFileSystemWatcher/IFileSystemWatcher.h"
 
 #include <vcclr.h>
 
@@ -17,7 +16,7 @@ namespace Clr
     public:
         EventRouter(FileWatcherBase^ managedFileSystemWatcher);
 
-        virtual void OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName)const;
+        virtual void OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName);
     private:
         gcroot<FileWatcherBase^> _managedFileSystemWatcher;
     };

@@ -2,9 +2,7 @@
 #define WINDOWS_FILE_FILEWATCHER_H__
 
 #include "Windows.h"
-#include "FileSystemWatcher/IFileSystemWatcher.h"
-#include "FileSystemWatcher/NativeSystemWatcher.h"
-#include "FileSystemWatcher/DelayedFileSystemWatcher.h"
+#include "NativeFileSystemWatcher/IFileSystemWatcher.h"
 #include "FileSystemWatcher/EventRouter.h"
 
 using namespace System;

@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="VisualStudio_2010_Release|Win32">
-      <Configuration>VisualStudio_2010_Release</Configuration>
+    <ProjectConfiguration Include="VisualStudio2015_Release|Win32">
+      <Configuration>VisualStudio2015_Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="VisualStudio_2010_Release|x64">
-      <Configuration>VisualStudio_2010_Release</Configuration>
+    <ProjectConfiguration Include="VisualStudio2015_Release|x64">
+      <Configuration>VisualStudio2015_Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="VisualStudio_2010_Debug|Win32">
-      <Configuration>VisualStudio_2010_Debug</Configuration>
+    <ProjectConfiguration Include="VisualStudio2015_Debug|Win32">
+      <Configuration>VisualStudio2015_Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="VisualStudio_2010_Debug|x64">
-      <Configuration>VisualStudio_2010_Debug</Configuration>
+    <ProjectConfiguration Include="VisualStudio2015_Debug|x64">
+      <Configuration>VisualStudio2015_Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -27,19 +27,19 @@
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Debug|x64'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|x64'">
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Release|x64'" Label="Configuration">
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Debug|Win32'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'">
     <PlatformToolset>v100</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <UseOfMfc>Dynamic</UseOfMfc>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Release|Win32'" Label="Configuration">
     <PlatformToolset>v140</PlatformToolset>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
@@ -51,23 +51,23 @@
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Release|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'">
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'">
     <Link>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio_2010_Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'">
     <Link>
       <AssemblyDebug>true</AssemblyDebug>
     </Link>

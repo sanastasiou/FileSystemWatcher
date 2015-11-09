@@ -11,23 +11,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FileSystemWatcher\AssemblyInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FileSystemWatcher\EventRouter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FileSystemWatcher\FileWatcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="include\NativeFileSystemWatcher\NativeFileSystemWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NativeFileSystemWatcher\ConqurrentQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NativeFileSystemWatcher\DelayedFileSystemWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NativeFileSystemWatcher\IFileSystemWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\FileSystemWatcher\EventRouter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\FileSystemWatcher\FileWatcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="src\NativeFileSystemWatcher\NativeFileSystemWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NativeFileSystemWatcher\DelayedFileSystemWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NativeFileSystemWatcher\IFileSystemWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -10,28 +10,38 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\NativeFileSystemWatcher\ConqurrentQueue.h" />
+    <ClInclude Include="include\NativeFileSystemWatcher\DelayedFileSystemWatcher.h" />
+    <ClInclude Include="include\NativeFileSystemWatcher\IFileSystemWatcher.h" />
+    <ClInclude Include="include\NativeFileSystemWatcher\NativeFileSystemWatcher.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\NativeFileSystemWatcher\DelayedFileSystemWatcher.cpp" />
+    <ClCompile Include="src\NativeFileSystemWatcher\IFileSystemWatcher.cpp" />
+    <ClCompile Include="src\NativeFileSystemWatcher\NativeFileSystemWatcher.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1BF08213-2A89-4B21-BA60-71059A536C31}</ProjectGuid>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <Keyword>ManagedCProj</Keyword>
-    <RootNamespace>FileSystemWatcher</RootNamespace>
-    <ProjectName>ClrFileSystemWatcher</ProjectName>
+    <ProjectGuid>{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>NativeFileSystemWatcher</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'" Label="Configuration">
-    <PlatformToolset>v140</PlatformToolset>
-    <CLRSupport>true</CLRSupport>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Release|Win32'" Label="Configuration">
-    <PlatformToolset>v140</PlatformToolset>
-    <CLRSupport>true</CLRSupport>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -54,54 +64,54 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'">
     <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)NativeFileSystemWatcher\\include;$(ProjectDir)include;$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WINDOWS_FILE_IFILESYSTEMWATCHER_DLL_EXPORTS;WINDOWS_FILE_DELAYEDFILESYSTEMWATCHER_DLL_EXPORTS;WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_DLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;NATIVEFILESYSTEMWATCHER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>WindowsBase.lib;NativeFileSystemWatcher.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>WindowsBase.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.dll" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"
+copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.pdb" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"
+copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.exp" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"
+copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.lib" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Release|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)NativeFileSystemWatcher\\include;$(ProjectDir)include;$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeaderFile />
-      <PrecompiledHeaderOutputFile />
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WINDOWS_FILE_IFILESYSTEMWATCHER_DLL_EXPORTS;WINDOWS_FILE_DELAYEDFILESYSTEMWATCHER_DLL_EXPORTS;WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_DLL_EXPORTS;WIN32;NDEBUG;_WINDOWS;_USRDLL;NATIVEFILESYSTEMWATCHER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>WindowsBase.lib;NativeFileSystemWatcher.lib;</AdditionalDependencies>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>WindowsBase.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.dll" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"
+copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.pdb" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"
+copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.exp" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"
+copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.lib" "$(SolutionDir)NativeFileSystemWatcherTests\\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\FileSystemWatcher\AssemblyInfo.cpp" />
-    <ClCompile Include="src\FileSystemWatcher\EventRouter.cpp" />
-    <ClCompile Include="src\FileSystemWatcher\FileWatcher.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\FileSystemWatcher\EventRouter.h" />
-    <ClInclude Include="include\FileSystemWatcher\FileWatcher.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\boost.1.59.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.59.0.0\build\native\boost.targets')" />

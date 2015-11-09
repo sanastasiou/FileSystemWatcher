@@ -5,6 +5,17 @@ namespace Windows
 {
 namespace Utilities
 {
+namespace String
+{
+namespace internal__
+{
+    WINDOWS_UTILITIES_FILE_API decltype(::tolower) * string_traits<std::string>::tolower = &::tolower;
+    WINDOWS_UTILITIES_FILE_API decltype(::towlower) * string_traits<std::wstring>::tolower = &::towlower;
+
+    //template struct string_traits<std::string>;
+    //template struct string_traits<std::wstring>;
+}   //namespace internal__
+}   //namespace String
     bool const File::CreateNewFile(char const * path, ::FILE * & fileStream, char const * mode)
     {
         ::errno_t err = fopen_s( &fileStream, path, mode );
@@ -14,7 +25,7 @@ namespace Utilities
     bool const File::CreateNewFile(wchar_t const * path, ::FILE  * & fileStream, wchar_t const * mode)
     {
         ::errno_t err = _wfopen_s( &fileStream, path, mode );
-        return (err == 0);                
+        return (err == 0);
     }
 
     std::string File::GetFullPath( char const * relativePath)
