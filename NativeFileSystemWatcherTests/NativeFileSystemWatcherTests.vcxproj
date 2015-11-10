@@ -95,7 +95,6 @@ copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.lib" "$(ProjectDir
     </Link>
     <PreLinkEvent>
       <Command>copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.dll" "$(ProjectDir)$(Configuration)"
-copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.pdb" "$(ProjectDir)$(Configuration)"
 copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.exp" "$(ProjectDir)$(Configuration)"
 copy "$(SolutionDir)$(Configuration)\\NativeFileSystemWatcher.lib" "$(ProjectDir)$(Configuration)"</Command>
     </PreLinkEvent>

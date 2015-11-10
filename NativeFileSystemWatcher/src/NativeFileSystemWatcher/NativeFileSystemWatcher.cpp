@@ -4,6 +4,7 @@
 #include <string>
 #include "WindowsBase/File.h"
 #include "atlpath.h"
+#include <iostream>
 
 namespace Windows
 {
@@ -60,27 +61,72 @@ namespace File
         StopPopping();
         ::QueueUserAPC(FileSystemWatcherBase::TerminateWatching, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
         _watcherThread.Stop();
-
+        GetEventQueue().ClearSync();
+        ResetOverlappedStructure();
     }
 
     void NativeFileSystemWatcher::SetDir(IFileSystemWatcher::FileSystemString const & newDir)
     {
-
+        if (newDir != _directoryInfo._dir)
+        {
+            if (_isWatching)
+            {
+                StopWatching();
+            }
+            _directoryInfo._dir = newDir;
+            if (_restartOnError)
+            {
+                StartWatching();
+            }
+        }
     }
 
     void NativeFileSystemWatcher::SetFlags(::DWORD const newFlags)
     {
-
+        if (newFlags != _directoryInfo._changeFlags)
+        {
+            if (_isWatching)
+            {
+                StopWatching();
+            }
+            _directoryInfo._changeFlags = newFlags;
+            if (_restartOnError)
+            {
+                StartWatching();
+            }
+        }
     }
 
     void NativeFileSystemWatcher::SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter)
     {
-
+        if (newInclusionFilter != _directoryInfo._includeFilter)
+        {
+            if (_isWatching)
+            {
+                StopWatching();
+            }
+            FileSystemWatcherBase::SetIncludeFilter(newInclusionFilter);
+            if (_restartOnError)
+            {
+                StartWatching();
+            }
+        }
     }
 
     void NativeFileSystemWatcher::SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter)
     {
-
+        if (newExclusionFilter != _directoryInfo._excludeFilter)
+        {
+            if (_isWatching)
+            {
+                StopWatching();
+            }
+            FileSystemWatcherBase::SetExcludeFilter(newExclusionFilter);
+            if (_restartOnError)
+            {
+                StartWatching();
+            }
+        }
     }
 
     void NativeFileSystemWatcher::SetRestartOnError(bool const restart)
@@ -207,6 +253,7 @@ namespace File
             return false;
         }
 
+        _terminate = false;
         //start background thread
         return _watcherThread.Start(this);
     }
@@ -235,7 +282,9 @@ namespace File
 
         // This might mean overflow? Not sure.
         if (!dwNumberOfBytesTransfered)
+        {
             return;
+        }
 
         pBlock->BackupBuffer(dwNumberOfBytesTransfered);
 

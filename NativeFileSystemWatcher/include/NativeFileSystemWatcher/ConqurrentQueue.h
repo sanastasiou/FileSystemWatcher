@@ -5,14 +5,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
 
-namespace boost {
-namespace detail {
-namespace win32 {
-    struct _SECURITY_ATTRIBUTES : public ::_SECURITY_ATTRIBUTES {};
-} // namespace win32
-} // namespace detail
-} // namespace boost
-
+#include <iostream>
 
 namespace Windows
 {
@@ -32,15 +25,13 @@ namespace File
         public:
             typedef typename std::queue<Data>::value_type value_type;
 
-            void clear()
+            void ClearSync()
             {
-                boost::mutex::scoped_lock lock(_mutex);
-                std::queue<Data> emptyQueue;
-                std::swap(_queue, emptyQueue);
-                lock.unlock();
-                _conditionVariable.notify_all();
+                while (!_queue.empty())
+                {
+                    _queue.pop();
+                }
             }
-
 
             void push(Data const& data)
             {

@@ -32,19 +32,19 @@ namespace File
 
         WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual ~NativeFileSystemWatcher();
 
-        void StartWatching();
-
-        void StopWatching();
-
-        void SetDir(IFileSystemWatcher::FileSystemString const & newDir);
-
-        void SetFlags(::DWORD const newFlags);
-
-        void SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter);
-
-        void SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter);
-
-        void SetRestartOnError(bool const restart);
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void StartWatching();
+                                                 
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void StopWatching();
+                                                 
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void SetDir(IFileSystemWatcher::FileSystemString const & newDir);
+                                                 
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void SetFlags(::DWORD const newFlags);
+                                                 
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter);
+                                                 
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter);
+                                                 
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void SetRestartOnError(bool const restart);
 
         WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileModified(const FileSystemString & strFileName);
 

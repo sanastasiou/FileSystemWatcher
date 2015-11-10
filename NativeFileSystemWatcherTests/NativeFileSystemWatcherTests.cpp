@@ -372,6 +372,61 @@ TEST_F(NativeFileSystemWatcherTestFixture, FileModificationErrorCountRestarting)
     ::delete myWatcher;
 }
 
+TEST_F(NativeFileSystemWatcherTestFixture, FileModificationTestInclusionFilterFailedThenChanged)
+{
+    _fileNotificationReceiver = new FileNotificationReceiver();
+
+    Windows::File::NativeFileSystemWatcher * myWatcher = new Windows::File::NativeFileSystemWatcher(_cwd,
+        (FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_ATTRIBUTES),
+        true,
+        _fileNotificationReceiver,
+        L"*.atm",
+        L"",
+        true,
+        16384);
+    ASSERT_TRUE(myWatcher->IsWatching());
+
+    for (unsigned int i = 0; i < 100; ++i)
+    {
+        if (i % 2 == 0)
+        {
+            myWatcher->SetIncludeFilter(L"*.txt");
+        }
+        else
+        {
+            myWatcher->SetIncludeFilter(L"*.atm");
+        }
+        _fileNotificationReceiver->_additionCount        = 0U;
+        _fileNotificationReceiver->_deletionCount        = 0U;
+        _fileNotificationReceiver->_errorCount           = 0U;
+        _fileNotificationReceiver->_lastNotificationFile = L"";
+        _fileNotificationReceiver->_notificationCount    = 0U;
+        ::Sleep(10);
+
+        std::ofstream myfile(_testFilePath);
+        myfile << "Writing this to a file.\n";
+        myfile << "Writing this to a file.\n";
+        myfile << "Writing this to a file.\n";
+
+        ::Sleep(10);
+
+        myfile.close();
+        if (i % 2 != 0)
+        {
+            ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == L"");
+            ASSERT_EQ(_fileNotificationReceiver->_notificationCount, 0U);
+        }
+        else
+        {
+            ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == _testFilePath);
+            ASSERT_GE(_fileNotificationReceiver->_notificationCount, 1U);
+        }
+        ASSERT_EQ(_fileNotificationReceiver->_errorCount, 0U);
+    }
+    ::delete myWatcher;
+
+}
+
 int main(int argc, wchar_t ** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

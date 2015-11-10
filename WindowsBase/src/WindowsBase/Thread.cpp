@@ -89,7 +89,7 @@ bool Thread::Stop(unsigned int* result /* = 0 */, unsigned int timeout /* = INFI
         _threadId = 0U;
     }
 
-    return 0;
+    return aSuccess;
 }
 
 ::DWORD WINAPI Thread::ThreadProc(::LPVOID param)

@@ -184,6 +184,12 @@ namespace File
         bool IsFileIncluded(std::wstring const & file)const;
 
         bool IsFileExcluded(std::wstring const & file)const;
+
+        void SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter);
+
+        void SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter);
+
+        void ResetOverlappedStructure();
     private:
         static const std::size_t MAX_BUFFER_SIZE = 65535U;
 

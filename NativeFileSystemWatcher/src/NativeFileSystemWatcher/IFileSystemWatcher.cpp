@@ -30,8 +30,7 @@ namespace File
         _excludeFilters(),
         _tmpOldFileName()
     {
-        ::ZeroMemory(&_overlapped, sizeof(::OVERLAPPED));
-        _overlapped.hEvent = this;
+        ResetOverlappedStructure();
         _buffer.resize(bufferSize);
         _backupBuffer.resize(bufferSize);
         //initialize filters
@@ -42,15 +41,14 @@ namespace File
     {
         ::DWORD dwBytes = 0U;
         // This call needs to be reissued after every APC.
-        (void)::ReadDirectoryChangesW(
-            dirHandle,                           // handle to directory
-            _buffer.data(),                      // read results buffer
-            _buffer.size(),                      // length of buffer
-            _directoryInfo._watchSubDirectories, // monitoring option
-            _directoryInfo._changeFlags,         // filter conditions
-            &dwBytes,                            // bytes returned
-            &_overlapped,                        // overlapped buffer
-            notificationCallback);               // completion routine
+        (void)::ReadDirectoryChangesW(  dirHandle,                           // handle to directory
+                                        _buffer.data(),                      // read results buffer
+                                        _buffer.size(),                      // length of buffer
+                                        _directoryInfo._watchSubDirectories, // monitoring option
+                                        _directoryInfo._changeFlags,         // filter conditions
+                                        &dwBytes,                            // bytes returned
+                                        &_overlapped,                        // overlapped buffer
+                                        notificationCallback);               // completion routine
     }
 
     void FileSystemWatcherBase::DoPopEvents()
@@ -67,6 +65,7 @@ namespace File
     {
         if(!_directoryInfo._includeFilter.empty())
         {
+            _includeFilters.clear();
             _isIncludeFilterActive = ParseFilter(_directoryInfo._includeFilter, _includeFilters);
         }
         else
@@ -75,6 +74,7 @@ namespace File
         }
         if (!_directoryInfo._excludeFilter.empty())
         {
+            _excludeFilters.clear();
             _isExcludeFilterActive = ParseFilter(_directoryInfo._excludeFilter, _excludeFilters);
         }
         else
@@ -86,6 +86,30 @@ namespace File
     bool FileSystemWatcherBase::ParseFilter(std::wstring const & filter, std::vector<std::wstring> & filters)const
     {
         return !boost::split(filters, filter, boost::is_any_of(L";"), boost::token_compress_on).empty();
+    }
+
+    void FileSystemWatcherBase::SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter)
+    {
+        if (_directoryInfo._includeFilter != newInclusionFilter)
+        {
+            _directoryInfo._includeFilter = newInclusionFilter;
+            InitializeFilters();
+        }
+    }
+
+    void FileSystemWatcherBase::SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter)
+    {
+        if (_directoryInfo._excludeFilter != newExclusionFilter)
+        {
+            _directoryInfo._excludeFilter = newExclusionFilter;
+            InitializeFilters();
+        }
+    }
+    
+    void FileSystemWatcherBase::ResetOverlappedStructure()
+    {
+        ::ZeroMemory(&_overlapped, sizeof(::OVERLAPPED));
+        _overlapped.hEvent = this;
     }
 } // namespace File
 } // namespace Windows
