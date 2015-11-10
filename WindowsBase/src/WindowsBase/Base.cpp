@@ -38,7 +38,7 @@ namespace internal__
        ::DWORD error = GetLastError();
         if (error)
         {
-            typename StringType::char_pointer lpMsgBuf;
+            typename StringType::char_pointer lpMsgBuf = nullptr;
             ::DWORD bufLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
                                             NULL,
                                             error,
@@ -66,14 +66,13 @@ namespace internal__
 
     bool Base::FlushFileBuffers(const wchar_t * drive)
     {
-        //const auto aVolumePath = L"\\\\.\\" + std::wstring(drive) + L":\0";
-        const auto volume = CreateFileW(drive,
-                                  GENERIC_WRITE,
-                                  FILE_SHARE_WRITE,
-                                  NULL,
-                                  OPEN_EXISTING,
-                                  0,
-                                  NULL);
+        const auto volume = CreateFileW( drive,
+                                         GENERIC_WRITE,
+                                         FILE_SHARE_WRITE,
+                                         NULL,
+                                         OPEN_EXISTING,
+                                         0,
+                                         NULL);
 
         if (volume == INVALID_HANDLE_VALUE)
         {
@@ -83,7 +82,7 @@ namespace internal__
         }
 
         //The documented way to flush an entire volume
-        if (!FlushFileBuffers(drive))
+        if (!::FlushFileBuffers(volume))
         {
             std::stringstream iStream;
             iStream << "Could not flush " << Utilities::String::string_cast<std::string>(drive) << ", error: " << GetLastErrorStr();

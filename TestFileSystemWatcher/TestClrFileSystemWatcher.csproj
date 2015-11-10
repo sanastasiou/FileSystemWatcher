@@ -83,9 +83,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FileSystemWatcher\FileSystemWatcher.vcxproj">
+    <ProjectReference Include="..\ClrFileSystemWatcher\ClrFileSystemWatcher.vcxproj">
       <Project>{1bf08213-2a89-4b21-ba60-71059a536c31}</Project>
-      <Name>FileSystemWatcher</Name>
+      <Name>ClrFileSystemWatcher</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

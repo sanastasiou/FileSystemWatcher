@@ -154,7 +154,7 @@ namespace File
         _directoryInfo._eventHandler->OnFileAdded(strFileName);
     }
 
-    void NativeFileSystemWatcher::OnError()
+    void NativeFileSystemWatcher::OnError(::DWORD const, const FileSystemString &)
     {
         if (_isWatching)
         {

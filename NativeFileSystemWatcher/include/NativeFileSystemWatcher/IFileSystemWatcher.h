@@ -37,7 +37,7 @@ namespace File
 
         WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnFileAdded(const FileSystemString & strFileName) = 0;
 
-        WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnError() = 0;
+        WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnError(::DWORD const errorCode, const FileSystemString & directory) = 0;
 
         typedef struct
         {
@@ -238,8 +238,8 @@ namespace File
             break;
         default:
             //error
-            _directoryInfo._eventHandler->OnError();
-            OnError();
+            _directoryInfo._eventHandler->OnError(e.second, _directoryInfo._dir);
+            OnError(e.second, _directoryInfo._dir);
             break;
         }
     }

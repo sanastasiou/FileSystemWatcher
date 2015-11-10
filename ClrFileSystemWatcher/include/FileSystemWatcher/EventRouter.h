@@ -17,6 +17,17 @@ namespace Clr
         EventRouter(FileWatcherBase^ managedFileSystemWatcher);
 
         virtual void OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName);
+
+        virtual void OnFileRenamed(const File::IFileSystemWatcher::FileSystemString & newFileName, const FileSystemString & oldFileName);
+
+        virtual void OnFileRemoved(const File::IFileSystemWatcher::FileSystemString & strFileName);
+
+        virtual void OnFileAdded(const File::IFileSystemWatcher::FileSystemString & strFileName);
+
+        virtual void OnError(::DWORD const errorCode, const FileSystemString & directory);
+
+        virtual ~EventRouter();
+
     private:
         gcroot<FileWatcherBase^> _managedFileSystemWatcher;
     };

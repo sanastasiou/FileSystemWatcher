@@ -3,6 +3,7 @@
 
 #include "gtest/gtest.h"
 #include "WindowsBase/File.h"
+#include "WindowsBase/Base.h"
 #include <string>
 
 class StringConversion : public ::testing::Test
@@ -12,6 +13,13 @@ class StringConversion : public ::testing::Test
     }
 
 public:
+};
+
+class WindowsBaseTests : public ::testing::Test
+{
+    virtual void SetUp()
+    {
+    }
 };
 
 TEST_F(StringConversion, ConvertEqualStrings)
@@ -119,6 +127,10 @@ TEST_F(StringConversion, TestStringWildcardCompare16)
     ASSERT_TRUE(Windows::Utilities::String::wildcard_compare("n*n*n?e", "nonsense"));
 }
 
+TEST_F(WindowsBaseTests, FlushFileBuffersTest)
+{
+    ASSERT_NO_THROW( Windows::Common::Base::FlushFileBuffers(L"\\\\.\\PHYSICALDRIVE0") );
+}
 
 int main(int argc, wchar_t ** argv)
 {

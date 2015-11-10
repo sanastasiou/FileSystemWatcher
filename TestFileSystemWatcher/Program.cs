@@ -49,7 +49,8 @@ namespace TestFileSystemWatcher
                                                  true,
                                                  @"*.atm",
                                                  string.Empty,
-                                                 FileWatcher.STANDARD_BUFFER_SIZE);
+                                                 false,
+                                                 FileWatcherBase.STANDARD_BUFFER_SIZE);
 
             myWatcher.Dispose();
         }
@@ -62,7 +63,8 @@ namespace TestFileSystemWatcher
                                                  true,
                                                  @"*.atm",
                                                  string.Empty,
-                                                 FileWatcher.STANDARD_BUFFER_SIZE);
+                                                 false,
+                                                 FileWatcherBase.STANDARD_BUFFER_SIZE);
 
             Assert.IsFalse(myWatcher.IsWatching());
             myWatcher.Dispose();
@@ -77,7 +79,8 @@ namespace TestFileSystemWatcher
                                                  true,
                                                  @"*.atm",
                                                  string.Empty,
-                                                 FileWatcher.STANDARD_BUFFER_SIZE);
+                                                 false,
+                                                 FileWatcherBase.STANDARD_BUFFER_SIZE);
 
             Assert.IsTrue(myWatcher.IsWatching());
             myWatcher.Dispose();
@@ -91,7 +94,8 @@ namespace TestFileSystemWatcher
                                                     true,
                                                     @"*.atm",
                                                     string.Empty,
-                                                    FileWatcher.STANDARD_BUFFER_SIZE);
+                                                    false,
+                                                    FileWatcherBase.STANDARD_BUFFER_SIZE);
             try
             {
                 bool notificationFired = false;

@@ -21,7 +21,15 @@ namespace Clr
         event System::EventHandler<RenamedEventArgs^>^    Renamed;
         event System::EventHandler<ErrorEventArgs^>^      Error;
 
-        void OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName);
+        virtual void OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName);
+
+        virtual void OnFileRenamed(const File::IFileSystemWatcher::FileSystemString & newFileName, const File::IFileSystemWatcher::FileSystemString & oldFileName);
+
+        virtual void OnFileRemoved(const File::IFileSystemWatcher::FileSystemString & strFileName);
+
+        virtual void OnFileAdded(const File::IFileSystemWatcher::FileSystemString & strFileName);
+
+        virtual void OnError(const ::DWORD errorCode, const File::IFileSystemWatcher::FileSystemString & directory);
 
         FileWatcherBase(EventRouter * eventRouter) :
             _pEventRouter(eventRouter)
@@ -30,7 +38,11 @@ namespace Clr
 
         ~FileWatcherBase()
         {
-            ::delete _pEventRouter;
+            if (_pEventRouter != nullptr)
+            {
+                ::delete _pEventRouter;
+                _pEventRouter = nullptr;
+            }
         }
 
         static const std::vector< ::BYTE >::size_type STANDARD_BUFFER_SIZE = 65535U;
@@ -41,7 +53,7 @@ namespace Clr
     public ref class FileWatcher : public FileWatcherBase
     {
     public:
-        FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, std::vector<::BYTE>::size_type bufferSize);
+        FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, bool restartOnError, std::vector<::BYTE>::size_type bufferSize);
 
         bool IsWatching();
 
@@ -54,7 +66,7 @@ namespace Clr
     public ref class DelayedFileWatcher : public FileWatcherBase
     {
     public:
-        DelayedFileWatcher(String^ dir, String^ include, String^ exclude, ::DWORD filterFlags, bool includeSubDir, ::DWORD const delay);
+        DelayedFileWatcher(String^ dir, String^ include, String^ exclude, bool restartOnError, ::DWORD filterFlags, bool includeSubDir, ::DWORD const delay);
 
         ~DelayedFileWatcher();
 

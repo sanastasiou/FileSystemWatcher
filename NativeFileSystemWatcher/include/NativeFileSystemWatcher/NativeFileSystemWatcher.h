@@ -54,7 +54,7 @@ namespace File
 
         WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileAdded(const FileSystemString & strFileName);
 
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnError();
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnError(::DWORD const, const FileSystemString &);
 
         bool IsAutomaticRestartingEnabled()const;
 

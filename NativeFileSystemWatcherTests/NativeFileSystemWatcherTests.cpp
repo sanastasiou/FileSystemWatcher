@@ -27,7 +27,7 @@ struct FileNotificationReceiver : Windows::File::IFileSystemWatcher
     {
     }
 
-    virtual void OnError()
+    virtual void OnError(::DWORD const errorCode, const FileSystemString & directory)
     {
         ++_notificationCount;
         ++_errorCount;
