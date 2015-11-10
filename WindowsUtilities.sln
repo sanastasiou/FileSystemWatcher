@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileSystemWatcherCLRWrapper", "FileSystemWactherCLRWrapper\FileSystemWactherCLRWrapper.vcxproj", "{B3A20BB5-BCA9-495F-AD08-273599F93D4A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClrFileSystemWatcher", "TestFileSystemWatcher\TestClrFileSystemWatcher.csproj", "{14216170-4B4B-43F5-B248-6E4A142EC062}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E6856-5EF7-40A7-8AA3-191267B8379B} = {698E6856-5EF7-40A7-8AA3-191267B8379B}
@@ -12,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClrFileSystemWatcher", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClrFileSystemWatcher", "ClrFileSystemWatcher\ClrFileSystemWatcher.vcxproj", "{1BF08213-2A89-4B21-BA60-71059A536C31}"
 	ProjectSection(ProjectDependencies) = postProject
-		{698E6856-5EF7-40A7-8AA3-191267B8379B} = {698E6856-5EF7-40A7-8AA3-191267B8379B}
+		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E} = {FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsBaseTests", "WindowsBaseTests\WindowsBaseTests.vcxproj", "{127FD5A5-1838-47D2-89DE-9A91BEC7B714}"
@@ -38,10 +36,6 @@ Global
 		VisualStudio2015_Release|x86 = VisualStudio2015_Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B3A20BB5-BCA9-495F-AD08-273599F93D4A}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Release|Win32
-		{B3A20BB5-BCA9-495F-AD08-273599F93D4A}.VisualStudio2015_Debug|x86.Build.0 = VisualStudio2015_Release|Win32
-		{B3A20BB5-BCA9-495F-AD08-273599F93D4A}.VisualStudio2015_Release|x86.ActiveCfg = VisualStudio2015_Release|Win32
-		{B3A20BB5-BCA9-495F-AD08-273599F93D4A}.VisualStudio2015_Release|x86.Build.0 = VisualStudio2015_Release|Win32
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Debug|x86
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2015_Debug|x86.Build.0 = VisualStudio2015_Debug|x86
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2015_Release|x86.ActiveCfg = VisualStudio2015_Release|x86

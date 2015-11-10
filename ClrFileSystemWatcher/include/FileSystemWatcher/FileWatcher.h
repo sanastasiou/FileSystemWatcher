@@ -36,13 +36,8 @@ namespace Clr
         {
         }
 
-        ~FileWatcherBase()
+        virtual ~FileWatcherBase()
         {
-            if (_pEventRouter != nullptr)
-            {
-                ::delete _pEventRouter;
-                _pEventRouter = nullptr;
-            }
         }
 
         static const std::vector< ::BYTE >::size_type STANDARD_BUFFER_SIZE = 65535U;
@@ -68,7 +63,7 @@ namespace Clr
     public:
         DelayedFileWatcher(String^ dir, String^ include, String^ exclude, bool restartOnError, ::DWORD filterFlags, bool includeSubDir, ::DWORD const delay);
 
-        ~DelayedFileWatcher();
+        virtual ~DelayedFileWatcher();
 
     private:
         File::FileSystemWatcherBase * _pDirectoryWatcher;
