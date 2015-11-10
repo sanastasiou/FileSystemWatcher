@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include "WindowsBase/File.h"
-//#include <msclr/marshal_cppstd.h>
 #include "atlpath.h"
 
 namespace Windows
@@ -16,10 +15,12 @@ namespace File
         IFileSystemWatcher * const eventHandler,
         IFileSystemWatcher::FileSystemString includeFilter,
         IFileSystemWatcher::FileSystemString excludeFilter,
+        bool restartOnError,
         std::vector<::BYTE>::size_type const bufferSize) :
         FileSystemWatcherBase(dir, changeFlags, watchSubDir, eventHandler, includeFilter, excludeFilter, bufferSize),
         _isWatching(false),
-        _watcherThread(FileSystemWatcherBase::ThreadStartProc)
+        _watcherThread(FileSystemWatcherBase::ThreadStartProc),
+        _restartOnError(restartOnError)
     {
         std::vector<std::wstring> _privileges;
         _privileges.push_back(SE_BACKUP_NAME);
@@ -27,73 +28,105 @@ namespace File
         _privileges.push_back(SE_CHANGE_NOTIFY_NAME);
         //enable privileges required for directory watching
         Utilities::PrivilegeEnabler::Initialize(_privileges);
+        StartWatching();
+    }
 
-        //check parameters
-        if (Common::Base::DirExist(dir.c_str()) && changeFlags != NO_CHANGES)
+    NativeFileSystemWatcher::~NativeFileSystemWatcher()
+    {
+        StopWatching();
+    }
+
+    void NativeFileSystemWatcher::StartWatching()
+    {
+        if (!_isWatching)
         {
-            _isWatching = StartDirectoryWatching();
-            if (_isWatching)
+            if (Common::Base::DirExist(_directoryInfo._dir.c_str()) && (_directoryInfo._changeFlags != NO_CHANGES))
             {
-                //listen for modifications
-                ::QueueUserAPC(FileSystemWatcherBase::AddDirectoryProc, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
-                StartPoppingEvents();
+                _isWatching = StartDirectoryWatching();
+                if (_isWatching)
+                {
+                    //listen for modifications
+                    ::QueueUserAPC(FileSystemWatcherBase::AddDirectoryProc, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
+                    StartPoppingEvents();
+                }
             }
         }
     }
 
-    bool NativeFileSystemWatcher::StartDirectoryWatching()
+    void NativeFileSystemWatcher::StopWatching()
     {
-        //open the directory to watch....
-        FileSystemWatcherBase::GetDirHandle() = ::CreateFileW(FileSystemWatcherBase::_directoryInfo._dir.c_str(),
-            FILE_LIST_DIRECTORY,
-            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, //<-- removing FILE_SHARE_DELETE prevents the user or someone else from renaming or deleting the watched directory.
-            NULL, //security attributes
-            OPEN_EXISTING,
-            FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,//<- the required priviliges for this flag are: SE_BACKUP_NAME and SE_RESTORE_NAME.
-            NULL
-            );
-        if (_dirHandle == INVALID_HANDLE_VALUE)
-        {
-            return false;
-        }
+        _isWatching = false;
+        //stop event publishing
+        StopPopping();
+        ::QueueUserAPC(FileSystemWatcherBase::TerminateWatching, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
+        _watcherThread.Stop();
 
-        //start background thread
-        return _watcherThread.Start(this);
     }
 
-    void WINAPI NativeFileSystemWatcher::DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped)
+    void NativeFileSystemWatcher::SetDir(IFileSystemWatcher::FileSystemString const & newDir)
     {
-        FileSystemWatcherBase* pBlock = reinterpret_cast<FileSystemWatcherBase*>(lpOverlapped->hEvent);
 
-        if (dwErrorCode == ERROR_OPERATION_ABORTED)
+    }
+
+    void NativeFileSystemWatcher::SetFlags(::DWORD const newFlags)
+    {
+
+    }
+
+    void NativeFileSystemWatcher::SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter)
+    {
+
+    }
+
+    void NativeFileSystemWatcher::SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter)
+    {
+
+    }
+
+    void NativeFileSystemWatcher::SetRestartOnError(bool const restart)
+    {
+        _restartOnError = restart;
+    }
+
+    void NativeFileSystemWatcher::OnFileModified(const FileSystemString & strFileName)
+    {
+        _directoryInfo._eventHandler->OnFileModified(strFileName);
+    }
+
+    void NativeFileSystemWatcher::OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName)
+    {
+        _directoryInfo._eventHandler->OnFileRenamed(newFileName, oldFileName);
+    }
+
+    void NativeFileSystemWatcher::OnFileRemoved(const FileSystemString & strFileName)
+    {
+        _directoryInfo._eventHandler->OnFileRemoved(strFileName);
+    }
+
+    void NativeFileSystemWatcher::OnFileAdded(const FileSystemString & strFileName)
+    {
+        _directoryInfo._eventHandler->OnFileAdded(strFileName);
+    }
+
+    void NativeFileSystemWatcher::OnError()
+    {
+        if (_isWatching)
         {
-            //send error notification to shut down this watcher
-            return;
+            //stop watching and restart watching if specified
+            StopWatching();
+            if (_restartOnError)
+            {
+                StartWatching();
+            }
         }
+    }
 
-        // This might mean overflow? Not sure.
-        if (!dwNumberOfBytesTransfered)
-        {
-            //nothing to read...
-            return;
-        }
-
-        // Can't use sizeof(FILE_NOTIFY_INFORMATION) because
-        // the structure is padded to 16 bytes.
-        _ASSERTE(dwNumberOfBytesTransfered >= offsetof(FILE_NOTIFY_INFORMATION, FileName) + sizeof(WCHAR));
-
-        // This might mean overflow? Not sure.
-        if (!dwNumberOfBytesTransfered)
-            return;
-
-        pBlock->BackupBuffer(dwNumberOfBytesTransfered);
-
-        // Get the new read issued as fast as possible. The documentation
-        // says that the original OVERLAPPED structure will not be used
-        // again once the completion routine is called.
-        pBlock->BeginRead(pBlock->GetNotificationRoutine(), pBlock->GetDirHandle());
-
-        pBlock->ProcessNotification();
+    void NativeFileSystemWatcher::RequestTermination()
+    {
+        ::CancelIo(_dirHandle);
+        ::CloseHandle(_dirHandle);
+        _dirHandle = nullptr;
+        FileSystemWatcherBase::RequestTermination();
     }
 
     LPOVERLAPPED_COMPLETION_ROUTINE NativeFileSystemWatcher::GetNotificationRoutine()const
@@ -144,7 +177,7 @@ namespace File
             else
             {
                 //check filters and only push it this thing matches
-                if(IsFileIncluded(wstrFilename) && !IsFileExcluded(wstrFilename))
+                if (IsFileIncluded(wstrFilename) && !IsFileExcluded(wstrFilename))
                 {
                     GetEventQueue().push(std::make_pair(wstrFilename, fni.Action));
                 }
@@ -158,76 +191,60 @@ namespace File
         }
     }
 
-
-    NativeFileSystemWatcher::~NativeFileSystemWatcher()
+    bool NativeFileSystemWatcher::StartDirectoryWatching()
     {
-        StopWatching();
-    }
-
-    void NativeFileSystemWatcher::RequestTermination()
-    {
-        ::CancelIo(_dirHandle);
-        ::CloseHandle(_dirHandle);
-        _dirHandle = nullptr;
-        FileSystemWatcherBase::RequestTermination();
-    }
-
-    void NativeFileSystemWatcher::StartWatching()
-    {
-        if (!IsWatching())
+        //open the directory to watch....
+        FileSystemWatcherBase::GetDirHandle() = ::CreateFileW(FileSystemWatcherBase::_directoryInfo._dir.c_str(),
+            FILE_LIST_DIRECTORY,
+            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, //<-- removing FILE_SHARE_DELETE prevents the user or someone else from renaming or deleting the watched directory.
+            NULL, //security attributes
+            OPEN_EXISTING,
+            FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,//<- the required priviliges for this flag are: SE_BACKUP_NAME and SE_RESTORE_NAME.
+            NULL
+            );
+        if (_dirHandle == INVALID_HANDLE_VALUE)
         {
-            _isWatching = StartDirectoryWatching();
-            StartPoppingEvents();
+            return false;
         }
+
+        //start background thread
+        return _watcherThread.Start(this);
     }
 
-    void NativeFileSystemWatcher::StopWatching()
+    void WINAPI NativeFileSystemWatcher::DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped)
     {
-        //stop event publishing
-        StopPopping();
-        ::QueueUserAPC(FileSystemWatcherBase::TerminateWatching, _watcherThread, reinterpret_cast<ULONG_PTR>(this));
-        _watcherThread.Stop();
-        _isWatching = false;
-    }
+        NativeFileSystemWatcher* pBlock = reinterpret_cast<NativeFileSystemWatcher*>(lpOverlapped->hEvent);
 
-    void NativeFileSystemWatcher::SetDir(IFileSystemWatcher::FileSystemString const & newDir)
-    {
+        if (dwErrorCode == ERROR_OPERATION_ABORTED)
+        {
+            //send error notification to shut down this watcher
+            pBlock->GetEventQueue().push(std::make_pair(L"", ERROR_OPERATION_ABORTED));
+            return;
+        }
 
-    }
+        // This might mean overflow? Not sure.
+        if (!dwNumberOfBytesTransfered)
+        {
+            //nothing to read...
+            return;
+        }
 
-    void NativeFileSystemWatcher::SetFlags(::DWORD const newFlags)
-    {
+        // Can't use sizeof(FILE_NOTIFY_INFORMATION) because
+        // the structure is padded to 16 bytes.
+        _ASSERTE(dwNumberOfBytesTransfered >= offsetof(FILE_NOTIFY_INFORMATION, FileName) + sizeof(WCHAR));
 
-    }
+        // This might mean overflow? Not sure.
+        if (!dwNumberOfBytesTransfered)
+            return;
 
-    void NativeFileSystemWatcher::SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter)
-    {
+        pBlock->BackupBuffer(dwNumberOfBytesTransfered);
 
-    }
+        // Get the new read issued as fast as possible. The documentation
+        // says that the original OVERLAPPED structure will not be used
+        // again once the completion routine is called.
+        pBlock->BeginRead(pBlock->GetNotificationRoutine(), pBlock->GetDirHandle());
 
-    void NativeFileSystemWatcher::SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter)
-    {
-
-    }
-
-    void NativeFileSystemWatcher::OnFileModified(const FileSystemString & strFileName)
-    {
-        _directoryInfo._eventHandler->OnFileModified(strFileName);
-    }
-
-    void NativeFileSystemWatcher::OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName)
-    {
-        _directoryInfo._eventHandler->OnFileRenamed(newFileName, oldFileName);
-    }
-
-    void NativeFileSystemWatcher::OnFileRemoved(const FileSystemString & strFileName)
-    {
-        _directoryInfo._eventHandler->OnFileRemoved(strFileName);
-    }
-
-    void NativeFileSystemWatcher::OnFileAdded(const FileSystemString & strFileName)
-    {
-        _directoryInfo._eventHandler->OnFileAdded(strFileName);
+        pBlock->ProcessNotification();
     }
 } // namespace File
 } // namespace Windows

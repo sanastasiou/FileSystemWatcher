@@ -8,6 +8,7 @@
 #endif
 
 #include "Windows.h"
+#include <string>
 
 namespace Windows
 {
@@ -16,6 +17,22 @@ namespace Common
     class WINDOWS_COMMON_BASE_API Base
     {
     public:
+        static std::string GetLastErrorStr();
+
+        static bool FlushFileBuffers(const wchar_t * drive);
+
+        static bool RemoveFileAttribute(const char * fileName, ::DWORD const attribute, bool force = false);
+
+        static bool RemoveFileAttribute(const wchar_t * fileName, ::DWORD const attribute, bool force = false);
+
+        static bool FileRename(const char * oldFileName, const char * newFileName, bool force = false);
+
+        static bool FileRename(const wchar_t * oldFileName, const wchar_t * newFileName, bool force = false);
+
+        static bool FileDelete(const char* filePath, bool force = false);
+
+        static bool FileDelete(const wchar_t* filePath, bool force = false);
+
         static bool DeleteFiles(const char* dir, bool force = false);
 
         static bool DeleteFiles(const wchar_t * dir, bool force = false);

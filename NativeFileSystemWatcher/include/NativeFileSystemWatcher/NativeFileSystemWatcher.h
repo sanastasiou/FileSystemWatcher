@@ -26,6 +26,7 @@ namespace File
                                                                          IFileSystemWatcher * const eventHandler,
                                                                          IFileSystemWatcher::FileSystemString includeFilter,
                                                                          IFileSystemWatcher::FileSystemString excludeFilter,
+                                                                         bool restartOnError,
                                                                          std::vector<::BYTE>::size_type const bufferSize
                                                                         );
 
@@ -43,6 +44,20 @@ namespace File
 
         void SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter);
 
+        void SetRestartOnError(bool const restart);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileModified(const FileSystemString & strFileName);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRemoved(const FileSystemString & strFileName);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileAdded(const FileSystemString & strFileName);
+
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnError();
+
+        bool IsAutomaticRestartingEnabled()const;
+
         IFileSystemWatcher::FileSystemString GetDir()const;
 
         ::DWORD GetFlags()const;
@@ -52,14 +67,6 @@ namespace File
         IFileSystemWatcher::FileSystemString GetExcludeFilter()const;
 
         bool IsWatching()const;
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileModified(const FileSystemString & strFileName);
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName);
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRemoved(const FileSystemString & strFileName);
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileAdded(const FileSystemString & strFileName);
     protected:
         virtual void RequestTermination();
 
@@ -71,31 +78,17 @@ namespace File
 
         Threading::Thread _watcherThread; //!< Thread where dir changes are observed.
         bool _isWatching;                 //!< Indicates whether the specified dir is being observed.
-        Threading::Mutex _addDirLock;     //!< Mutex when adding directories to watch.        
+        Threading::Mutex _addDirLock;     //!< Mutex when adding directories to watch.
+        bool _restartOnError;             //!< Restart wathing on error automatically.
 
         bool StartDirectoryWatching();
 
         static void WINAPI DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped );
     }; //class NativeFileSystemWatcher
 
-    inline bool NativeFileSystemWatcher::IsWatching()const
+    inline bool NativeFileSystemWatcher::IsAutomaticRestartingEnabled()const
     {
-        return _isWatching;
-    }
-
-    inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetExcludeFilter()const
-    {
-        return _directoryInfo._excludeFilter;
-    }
-
-    inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetIncludeFilter()const
-    {
-        return _directoryInfo._includeFilter;
-    }
-
-    inline ::DWORD  NativeFileSystemWatcher::GetFlags()const
-    {
-        return _directoryInfo._changeFlags;
+        return _restartOnError;
     }
 
     inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetDir()const
@@ -103,7 +96,25 @@ namespace File
         return _directoryInfo._dir;
     }
 
+    inline ::DWORD  NativeFileSystemWatcher::GetFlags()const
+    {
+        return _directoryInfo._changeFlags;
+    }
 
+    inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetIncludeFilter()const
+    {
+        return _directoryInfo._includeFilter;
+    }
+
+    inline IFileSystemWatcher::FileSystemString NativeFileSystemWatcher::GetExcludeFilter()const
+    {
+        return _directoryInfo._excludeFilter;
+    }
+
+    inline bool NativeFileSystemWatcher::IsWatching()const
+    {
+        return _isWatching;
+    }
 } // namespace File
 } // namespace Windows
 

@@ -12,8 +12,6 @@ namespace internal__
     WINDOWS_UTILITIES_FILE_API decltype(::tolower) * string_traits<std::string>::tolower = &::tolower;
     WINDOWS_UTILITIES_FILE_API decltype(::towlower) * string_traits<std::wstring>::tolower = &::towlower;
 
-    //template struct string_traits<std::string>;
-    //template struct string_traits<std::wstring>;
 }   //namespace internal__
 }   //namespace String
     bool const File::CreateNewFile(char const * path, ::FILE * & fileStream, char const * mode)
@@ -60,8 +58,8 @@ namespace internal__
 
     std::string File::GetDirectoryFromFilePath( char const * path)
     {
-        const std::string aFullPath(File::GetFullPath(path));
-        const size_t aPos = aFullPath.rfind("\\/");
+        auto aFullPath(File::GetFullPath(path));
+        auto aPos = aFullPath.find_last_of("/\\");
         if( aPos == std::string::npos ) 
         {
             throw std::exception(std::string("Could not find directory using file path : " + std::string(path)).c_str());

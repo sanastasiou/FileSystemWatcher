@@ -37,6 +37,8 @@ namespace File
 
         WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnFileAdded(const FileSystemString & strFileName) = 0;
 
+        WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnError() = 0;
+
         typedef struct
         {
             FileSystemString _dir;
@@ -212,9 +214,10 @@ namespace File
         switch (e.second)
         {
         case FILE_ACTION_ADDED:
-            
+            _directoryInfo._eventHandler->OnFileAdded(e.first);
             break;
         case FILE_ACTION_REMOVED:
+            _directoryInfo._eventHandler->OnFileRemoved(e.first);
             break;
         case FILE_ACTION_MODIFIED:
             _directoryInfo._eventHandler->OnFileModified(e.first);
@@ -228,6 +231,9 @@ namespace File
             _directoryInfo._eventHandler->OnFileRenamed(e.first, _tmpOldFileName);
             break;
         default:
+            //error
+            _directoryInfo._eventHandler->OnError();
+            OnError();
             break;
         }
     }

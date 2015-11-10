@@ -2,11 +2,202 @@
 #include "Windows.h"
 #include <string>
 #include "WindowsBase/File.h"
+#include <exception>
+#include <sstream>
 
 namespace Windows
 {
 namespace Common
 {
+namespace internal__
+{
+    template<class T>
+    struct windows_traits;
+
+    template<>
+    struct windows_traits<std::string>
+    {
+        typedef ::LPSTR char_pointer;
+        typedef ::LPCSTR const_char_pointer;
+        typedef std::string type;
+        //todo
+        //typedef decltype(FormatMessageA)
+    };
+
+    template<>
+    struct windows_traits<std::wstring>
+    {
+        typedef ::LPWSTR char_pointer;
+        typedef ::LPCWSTR const_char_pointer;
+        typedef std::wstring type;
+    };
+
+    template<class StringType>
+    typename StringType::type GetLastErrorImpl()
+    {
+       ::DWORD error = GetLastError();
+        if (error)
+        {
+            typename StringType::char_pointer lpMsgBuf;
+            ::DWORD bufLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                            NULL,
+                                            error,
+                                            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                                            lpMsgBuf,
+                                            0, NULL);
+            if (bufLen)
+            {
+                typename StringType::const_char_pointer lpMsgStr = static_cast<typename StringType::const_char_pointer>(lpMsgBuf);
+                typename StringType::type result(lpMsgStr, lpMsgStr + bufLen);
+
+                LocalFree(lpMsgBuf);
+
+                return result;
+            }
+        }
+        return typename StringType::type();
+    }
+}
+
+    std::string Base::GetLastErrorStr()
+    {
+        return internal__::GetLastErrorImpl< internal__::windows_traits<std::string> >();
+    }
+
+    bool Base::FlushFileBuffers(const wchar_t * drive)
+    {
+        //const auto aVolumePath = L"\\\\.\\" + std::wstring(drive) + L":\0";
+        const auto volume = CreateFileW(drive,
+                                  GENERIC_WRITE,
+                                  FILE_SHARE_WRITE,
+                                  NULL,
+                                  OPEN_EXISTING,
+                                  0,
+                                  NULL);
+
+        if (volume == INVALID_HANDLE_VALUE)
+        {
+            std::stringstream iStream;
+            iStream << "Could not open handle to " << Utilities::String::string_cast<std::string>(drive) << ", error: " << GetLastErrorStr();
+            throw std::exception(iStream.str().c_str());
+        }
+
+        //The documented way to flush an entire volume
+        if (!FlushFileBuffers(drive))
+        {
+            std::stringstream iStream;
+            iStream << "Could not flush " << Utilities::String::string_cast<std::string>(drive) << ", error: " << GetLastErrorStr();
+            throw std::exception(iStream.str().c_str());
+        }
+        
+        if (!CloseHandle(volume))
+        {
+            std::stringstream iStream;
+            iStream << "Could not close handle " << Utilities::String::string_cast<std::string>(drive) << ", error: " << GetLastErrorStr();
+            throw std::exception(iStream.str().c_str());
+        }
+
+        return true;
+    }
+
+    bool Base::RemoveFileAttribute(const char * fileName, ::DWORD const attribute, bool force /*= false */)
+    {
+        if (force)
+        {
+            if (::GetFileAttributesA(fileName) & FILE_ATTRIBUTE_READONLY)
+            {
+                ::SetFileAttributesA(fileName, (::GetFileAttributesA(fileName) & ~FILE_ATTRIBUTE_READONLY));
+            }
+            if (attribute == FILE_ATTRIBUTE_READONLY)
+            {
+                return true;
+            }
+            else
+            {
+                return ::SetFileAttributesA(fileName, (::GetFileAttributesA(fileName) & ~attribute)) != 0;
+            }
+        }
+        else
+        {
+            return ::SetFileAttributesA(fileName, (::GetFileAttributesA(fileName) & ~attribute)) != 0;
+        }
+    }
+
+    bool Base::RemoveFileAttribute(const wchar_t * fileName, ::DWORD const attribute, bool force /*= false */)
+    {
+        if (force)
+        {
+            if (::GetFileAttributesW(fileName) & FILE_ATTRIBUTE_READONLY)
+            {
+                ::SetFileAttributesW(fileName, (::GetFileAttributesW(fileName) & ~FILE_ATTRIBUTE_READONLY));
+            }
+            if (attribute == FILE_ATTRIBUTE_READONLY)
+            {
+                return true;
+            }
+            else
+            {
+                return ::SetFileAttributesW(fileName, (::GetFileAttributesW(fileName) & ~attribute)) != 0;
+            }
+        }
+        else
+        {
+            return ::SetFileAttributesW(fileName, (::GetFileAttributesW(fileName) & ~attribute)) != 0;
+        }
+    }
+
+    bool Base::FileRename(const char * oldFileName, const char * newFileName, bool force /*= false */)
+    {
+        if (force)
+        {
+            RemoveFileAttribute(oldFileName, FILE_ATTRIBUTE_READONLY);
+        }
+        return ::MoveFileA(oldFileName, newFileName) != 0;
+    }
+
+    bool Base::FileRename(const wchar_t * oldFileName, const wchar_t * newFileName, bool force /*= false */)
+    {
+        if (force)
+        {
+            RemoveFileAttribute(oldFileName, FILE_ATTRIBUTE_READONLY);
+        }
+        return ::MoveFileW(oldFileName, newFileName) != 0;
+    }
+
+    bool Base::FileDelete(const char* filePath, bool force /*= false */)
+    {
+        if (FileExist(filePath))
+        {
+            if (force)
+            {
+                if (::GetFileAttributesA(filePath) & FILE_ATTRIBUTE_READONLY)
+                {
+                    ::SetFileAttributesA(filePath, (::GetFileAttributesA(filePath) & ~FILE_ATTRIBUTE_READONLY));
+                }
+            }
+            ::DeleteFileA(filePath);
+            return true;
+        }
+        return false;
+    }
+
+    bool Base::FileDelete(const wchar_t* filePath, bool force /*= false */)
+    {
+        if (FileExist(filePath))
+        {
+            if (force)
+            {
+                if (::GetFileAttributesW(filePath) & FILE_ATTRIBUTE_READONLY)
+                {
+                    ::SetFileAttributesW(filePath, (::GetFileAttributesW(filePath) & ~FILE_ATTRIBUTE_READONLY));
+                }
+            }
+            ::DeleteFileW(filePath);
+            return true;
+        }
+        return false;
+    }
+
     bool Base::DeleteFiles(const char* dir, bool force /* = false */)
     {
         if (!DirExist(dir)) return false;
