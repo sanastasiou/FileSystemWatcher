@@ -36,7 +36,7 @@ bool Thread::Start(void* data)
         return false;
     }
 
-    StateObject * aThreadProcParam = new StateObject{ this, data };
+    StateObject * aThreadProcParam = new StateObject( this, data );
 
     _threadHandle = ::CreateThread(NULL, 0, ThreadProc, aThreadProcParam, 0, &_threadId);
     
@@ -94,19 +94,19 @@ bool Thread::Stop(unsigned int* result /* = 0 */, unsigned int timeout /* = INFI
 
 ::DWORD WINAPI Thread::ThreadProc(::LPVOID param)
 {
-    StateObject * tpp = reinterpret_cast<StateObject*>(param);
+    StateObject * aStateObject = reinterpret_cast<StateObject*>(param);
     ::DWORD result;
 
-    if (tpp->thread->_callback != NULL)
+    if (aStateObject->_thread->_callback != NULL)
     {
-        result = tpp->thread->_callback(tpp->param);
+        result = aStateObject->_thread->_callback(aStateObject->_param);
     }
     else
     {
-        result = tpp->thread->DefaultFunc(tpp->param);
+        result = aStateObject->_thread->DefaultFunc(aStateObject->_param);
     }
 
-    delete tpp;
+    ::delete aStateObject;
 
     return result;
 }

@@ -1,5 +1,6 @@
 #include "WindowsBase/PrivilegeEnabler.h"
 #include "atltrace.h"
+#include <tchar.h>
 
 namespace Windows
 {

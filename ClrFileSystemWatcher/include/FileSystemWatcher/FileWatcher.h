@@ -61,7 +61,7 @@ namespace Clr
     public ref class DelayedFileWatcher : public FileWatcherBase
     {
     public:
-        DelayedFileWatcher(String^ dir, String^ include, String^ exclude, bool restartOnError, ::DWORD filterFlags, bool includeSubDir, ::DWORD const delay);
+        DelayedFileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, bool restartOnError, ::DWORD const delay, std::vector<::BYTE>::size_type bufferSize);
 
         virtual ~DelayedFileWatcher();
 

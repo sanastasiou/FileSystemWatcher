@@ -45,8 +45,13 @@ private:
 
     struct StateObject
     {
-        Thread* thread;
-        void* param;
+        StateObject(Thread * thread, void * param) :
+            _thread(thread), _param(param)
+        {
+        }
+        
+        Thread* _thread;
+        void* _param;
     };
 };
 

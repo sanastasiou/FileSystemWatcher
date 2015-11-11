@@ -9,15 +9,29 @@
 
 #include "WindowsBase/File.h"
 #include "WindowsBase/Thread.h"
-#include "IFileSystemWatcher.h"
+#include "NativeFileSystemWatcher.h"
 
 namespace Windows
 {
 namespace File
 {
-    class DelayedFileSystemWatcher : public FileSystemWatcherBase
+    class DelayedFileSystemWatcher : public NativeFileSystemWatcher
     {
+    public:
+        WINDOWS_FILE_DELAYEDFILESYSTEMWATCHER_API DelayedFileSystemWatcher( IFileSystemWatcher::FileSystemString const & dir,
+                                                                            ::DWORD changeFlags,
+                                                                            ::BOOL const watchSubDir,
+                                                                            IFileSystemWatcher * const eventHandler,
+                                                                            IFileSystemWatcher::FileSystemString includeFilter,
+                                                                            IFileSystemWatcher::FileSystemString excludeFilter,
+                                                                            bool restartOnError,
+                                                                            unsigned int delay,
+                                                                            std::vector<::BYTE>::size_type const bufferSize
+                                                                          );
+
         WINDOWS_FILE_DELAYEDFILESYSTEMWATCHER_API virtual ~DelayedFileSystemWatcher();
+    private:
+        unsigned int _delay;
     }; // class DelayedFileSystemWatcher
 } // namespace File
 } // namespace Windows

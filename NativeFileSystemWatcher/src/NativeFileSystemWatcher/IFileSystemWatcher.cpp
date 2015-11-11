@@ -18,7 +18,7 @@ namespace File
         FileSystemString includeFilter,
         FileSystemString excludeFilter,
         std::vector<BYTE>::size_type const bufferSize) :
-        _directoryInfo(DirectoryInfo{ dir, changeFlags, watchSubDir, eventHandler, includeFilter, excludeFilter }),
+        _directoryInfo(dir, changeFlags, watchSubDir, eventHandler, includeFilter, excludeFilter),
         _terminate(false),
         BUFFER_SIZE(bufferSize > MAX_BUFFER_SIZE ? MAX_BUFFER_SIZE : bufferSize),
         _dirHandle(INVALID_HANDLE_VALUE),

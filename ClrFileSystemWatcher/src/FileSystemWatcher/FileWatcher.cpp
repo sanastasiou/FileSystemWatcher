@@ -10,9 +10,10 @@ namespace Windows
 namespace Clr
 {
     FileWatcher::FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, bool restartOnError, std::vector<::BYTE>::size_type bufferSize) :
-        FileWatcherBase(new EventRouter(this)),
+        FileWatcherBase(nullptr),
         _pDirectoryWatcher(nullptr)
     {
+        _pEventRouter = new EventRouter(this);
         _pDirectoryWatcher = new File::NativeFileSystemWatcher( msclr::interop::marshal_as<File::IFileSystemWatcher::FileSystemString>(dir),
                                                                 filterFlags, 
                                                                 includeSubDir,
@@ -69,11 +70,21 @@ namespace Clr
         ::delete _pDirectoryWatcher;
     }
 
-    DelayedFileWatcher::DelayedFileWatcher(String^ dir, String^ include, String^ exclude, bool restartOnError, ::DWORD filterFlags, bool includeSubDir, ::DWORD const delay) :
-        FileWatcherBase(new EventRouter(this)),
+    DelayedFileWatcher::DelayedFileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, bool restartOnError, ::DWORD const delay, std::vector<::BYTE>::size_type bufferSize) :
+        FileWatcherBase(nullptr),
         _pDirectoryWatcher(nullptr)
     {
-        //_pDirectoryWatcher = new EventRouter<File::DelayedFileSystemWatcher>(this);
+        _pEventRouter = new EventRouter(this);
+        _pDirectoryWatcher = new File::DelayedFileSystemWatcher( msclr::interop::marshal_as<File::IFileSystemWatcher::FileSystemString>(dir),
+                                                                filterFlags, 
+                                                                includeSubDir,
+                                                                _pEventRouter, 
+                                                                msclr::interop::marshal_as<File::IFileSystemWatcher::FileSystemString>(include),
+                                                                msclr::interop::marshal_as<File::IFileSystemWatcher::FileSystemString>(exclude),
+                                                                restartOnError,
+                                                                delay,
+                                                                bufferSize
+                                                              );
     }
 
     DelayedFileWatcher::~DelayedFileWatcher()

@@ -39,15 +39,29 @@ namespace File
 
         WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnError(::DWORD const errorCode, const FileSystemString & directory) = 0;
 
-        typedef struct
+        struct DirectoryInfo
         {
+            DirectoryInfo( FileSystemString const & dir, 
+                           ::DWORD const changeFlags, 
+                           ::BOOL const watchSubDirectories,
+                           IFileSystemWatcher * eventHandler, 
+                           FileSystemString const & includeFilter,
+                           FileSystemString const & excludeFilter):
+                _dir(dir),
+                _changeFlags(changeFlags),
+                _watchSubDirectories(watchSubDirectories),
+                _eventHandler(eventHandler),
+                _includeFilter(includeFilter),
+                _excludeFilter(excludeFilter)
+            {}
+
             FileSystemString _dir;
             ::DWORD _changeFlags;
             ::BOOL _watchSubDirectories;
             IFileSystemWatcher * _eventHandler;
             FileSystemString _includeFilter;
             FileSystemString _excludeFilter;
-        }DirectoryInfo;
+        };
 
         WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual ~IFileSystemWatcher();
     };
