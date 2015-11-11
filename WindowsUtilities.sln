@@ -13,12 +13,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClrFileSystemWatcher", "Clr
 		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E} = {FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsBaseTests", "WindowsBaseTests\WindowsBaseTests.vcxproj", "{127FD5A5-1838-47D2-89DE-9A91BEC7B714}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsUtilitiesTests", "WindowsUtilitiesTests\WindowsUtilitiesTests.vcxproj", "{127FD5A5-1838-47D2-89DE-9A91BEC7B714}"
 	ProjectSection(ProjectDependencies) = postProject
 		{698E6856-5EF7-40A7-8AA3-191267B8379B} = {698E6856-5EF7-40A7-8AA3-191267B8379B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsBase", "WindowsBase\WindowsBase.vcxproj", "{698E6856-5EF7-40A7-8AA3-191267B8379B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsUtilities", "WindowsUtilities\WindowsUtilities.vcxproj", "{698E6856-5EF7-40A7-8AA3-191267B8379B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeFileSystemWatcher", "NativeFileSystemWatcher\NativeFileSystemWatcher.vcxproj", "{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}"
 	ProjectSection(ProjectDependencies) = postProject

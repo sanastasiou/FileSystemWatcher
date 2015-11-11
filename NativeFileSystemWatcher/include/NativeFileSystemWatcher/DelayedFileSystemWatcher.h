@@ -7,8 +7,8 @@
 #define WINDOWS_FILE_DELAYEDFILESYSTEMWATCHER_API __declspec (dllimport)
 #endif
 
-#include "WindowsBase/File.h"
-#include "WindowsBase/Thread.h"
+#include "WindowsUtilities/File.h"
+#include "WindowsUtilities/Thread.h"
 #include "NativeFileSystemWatcher.h"
 
 namespace Windows

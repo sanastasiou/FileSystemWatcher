@@ -1,4 +1,4 @@
-#include "WindowsBase/Mutex.h"
+#include "WindowsUtilities/Mutex.h"
 
 namespace Windows
 {

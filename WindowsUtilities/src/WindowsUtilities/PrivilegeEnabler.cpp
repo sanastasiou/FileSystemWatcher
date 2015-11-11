@@ -1,4 +1,4 @@
-#include "WindowsBase/PrivilegeEnabler.h"
+#include "WindowsUtilities/PrivilegeEnabler.h"
 
 //workaround for visual studio bug, atltrace.h doesn't know about _T -> fail
 #ifdef _UNICODE

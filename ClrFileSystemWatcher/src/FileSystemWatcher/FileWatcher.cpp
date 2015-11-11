@@ -3,7 +3,7 @@
 #include "NativeFileSystemWatcher/DelayedFileSystemWatcher.h"
 #include "FileSystemWatcher/EventRouter.h"
 #include <msclr/marshal_cppstd.h>
-#include "WindowsBase/Base.h"
+#include "WindowsUtilities/Base.h"
 
 namespace Windows
 {

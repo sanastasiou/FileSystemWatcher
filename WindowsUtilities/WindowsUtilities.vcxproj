@@ -18,11 +18,26 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\WindowsUtilities\Base.h" />
+    <ClInclude Include="include\WindowsUtilities\File.h" />
+    <ClInclude Include="include\WindowsUtilities\Mutex.h" />
+    <ClInclude Include="include\WindowsUtilities\PrivilegeEnabler.h" />
+    <ClInclude Include="include\WindowsUtilities\Thread.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\WindowsUtilities\Base.cpp" />
+    <ClCompile Include="src\WindowsUtilities\File.cpp" />
+    <ClCompile Include="src\WindowsUtilities\Mutex.cpp" />
+    <ClCompile Include="src\WindowsUtilities\PrivilegeEnabler.cpp" />
+    <ClCompile Include="src\WindowsUtilities\Thread.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{698E6856-5EF7-40A7-8AA3-191267B8379B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>WindowsBase</RootNamespace>
-    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>WindowsUtilities</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'" Label="Configuration">
@@ -30,6 +45,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -37,6 +53,7 @@
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2013_Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -44,6 +61,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2010_Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -78,7 +96,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WINDOWS_UTILITIES_PRIVILEGE_ENABLER_DLL_EXPORTS;WINDOWS_THREADING_THREAD_DLL_EXPORTS;WINDOWS_THREADING_MUTEX_DLL_EXPORTS;WINDOWS_UTILITIES_FILE_DLL_EXPORTS;WINDOWS_COMMON_BASE_DLL_EXPORTS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)WindowsUtilities\\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -99,7 +117,7 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)WindowsUtilities\\include</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
@@ -123,7 +141,7 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)WindowsUtilities\\include</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
@@ -158,20 +176,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="include\WindowsBase\Base.h" />
-    <ClInclude Include="include\WindowsBase\File.h" />
-    <ClInclude Include="include\WindowsBase\PrivilegeEnabler.h" />
-    <ClInclude Include="include\WindowsBase\Thread.h" />
-    <ClInclude Include="include\WindowsBase\Mutex.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\WindowsBase\Base.cpp" />
-    <ClCompile Include="src\WindowsBase\File.cpp" />
-    <ClCompile Include="src\WindowsBase\PrivilegeEnabler.cpp" />
-    <ClCompile Include="src\WindowsBase\Thread.cpp" />
-    <ClCompile Include="src\WindowsBase\Mutex.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

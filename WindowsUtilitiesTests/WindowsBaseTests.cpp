@@ -2,8 +2,8 @@
 //
 
 #include "gtest/gtest.h"
-#include "WindowsBase/File.h"
-#include "WindowsBase/Base.h"
+#include "WindowsUtilities/File.h"
+#include "WindowsUtilities/Base.h"
 #include <string>
 
 class StringConversion : public ::testing::Test

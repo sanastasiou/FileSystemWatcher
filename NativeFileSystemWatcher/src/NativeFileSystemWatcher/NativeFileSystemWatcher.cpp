@@ -1,10 +1,9 @@
 #include "NativeFileSystemWatcher/NativeFileSystemWatcher.h"
-#include "WindowsBase/PrivilegeEnabler.h"
+#include "WindowsUtilities/PrivilegeEnabler.h"
 #include <vector>
 #include <string>
-#include "WindowsBase/File.h"
+#include "WindowsUtilities/File.h"
 #include "atlpath.h"
-#include <iostream>
 
 namespace Windows
 {

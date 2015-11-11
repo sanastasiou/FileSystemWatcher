@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 #include "ConqurrentQueue.h"
-#include "WindowsBase/Thread.h"
+#include "WindowsUtilities/Thread.h"
 #include <algorithm>
-#include "WindowsBase/File.h"
+#include "WindowsUtilities/File.h"
 
 namespace Windows
 {

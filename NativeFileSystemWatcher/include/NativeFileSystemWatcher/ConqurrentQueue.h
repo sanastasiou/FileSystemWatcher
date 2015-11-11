@@ -2,10 +2,10 @@
 #define WINDOWS_FILE_CONQURRENT_QUEUE_H__
 
 #include <queue>
+#pragma unmanaged
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
-
-#include <iostream>
+#pragma managed
 
 namespace Windows
 {

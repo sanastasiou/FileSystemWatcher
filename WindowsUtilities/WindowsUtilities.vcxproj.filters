@@ -11,36 +11,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\WindowsBase\Base.h">
+    <ClInclude Include="include\WindowsUtilities\Base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\WindowsBase\Thread.h">
+    <ClInclude Include="include\WindowsUtilities\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\WindowsBase\Mutex.h">
+    <ClInclude Include="include\WindowsUtilities\Mutex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\WindowsBase\File.h">
+    <ClInclude Include="include\WindowsUtilities\PrivilegeEnabler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\WindowsBase\PrivilegeEnabler.h">
+    <ClInclude Include="include\WindowsUtilities\Thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\WindowsBase\Base.cpp">
+    <ClCompile Include="src\WindowsUtilities\Base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsBase\Thread.cpp">
+    <ClCompile Include="src\WindowsUtilities\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsBase\Mutex.cpp">
+    <ClCompile Include="src\WindowsUtilities\Mutex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsBase\File.cpp">
+    <ClCompile Include="src\WindowsUtilities\PrivilegeEnabler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsBase\PrivilegeEnabler.cpp">
+    <ClCompile Include="src\WindowsUtilities\Thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

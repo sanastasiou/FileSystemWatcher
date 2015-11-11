@@ -7,9 +7,9 @@
 #define WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API __declspec (dllimport)
 #endif
 
-#include "WindowsBase/File.h"
-#include "WindowsBase/Thread.h"
-#include "WindowsBase/Mutex.h"
+#include "WindowsUtilities/File.h"
+#include "WindowsUtilities/Thread.h"
+#include "WindowsUtilities/Mutex.h"
 #include "IFileSystemWatcher.h"
 #include <vector>
 
