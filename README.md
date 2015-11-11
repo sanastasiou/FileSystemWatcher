@@ -1,7 +1,9 @@
 FileSystemWatcher
 =================
 
-A CLI wrapper for a C FileSystemWrapper to use in windows.
+A CLI wrapper for a C FileSystemWrapper to use in windows, base on the excellent article by Jim Beveridge
+
+http://qualapps.blogspot.de/2010/05/understanding-readdirectorychangesw.html
 
 The "default" FileSystemWatcher implementation in .NET has problems:
 
@@ -15,4 +17,4 @@ https://connect.microsoft.com/VisualStudio/feedback/details/780775/filesystemwat
 
 And probably others. I noticed the bugs during the implementation of a plugin. My plugin was crashing when a lot of files were removed/added.
 
-This project , relies on a pure C/C++ implementation of a file system watcher and is more robust. On top of it is a CLI wrapper which exposes the same events as the original class. So one could easily use this wrapper instead of the standard .net class.
+This project , relies on a pure C/C++ implementation of a file system watcher and is more robust. On top of it is a CLI wrapper which exposes the same events as the original class. So one could seamlessly use this wrapper instead of the standard .net class.
