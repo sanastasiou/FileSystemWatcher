@@ -47,3 +47,5 @@ VisualStudio2015_Release/
 *.asm
 NativeFileSystemWatcherTests/TestFiles/
 VisualStudio2010_Release/
+NativeFileSystemWatcherTests/VisualStudio2013_Release/
+VisualStudio2013_Release/

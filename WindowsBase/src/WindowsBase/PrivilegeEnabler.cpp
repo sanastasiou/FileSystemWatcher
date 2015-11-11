@@ -1,6 +1,13 @@
 #include "WindowsBase/PrivilegeEnabler.h"
+
+//workaround for visual studio bug, atltrace.h doesn't know about _T -> fail
+#ifdef _UNICODE
+#define _T(x)      L ## x
+#else /* _UNICODE */
+#define _T(x)      x
+#endif /* _UNICODE */
+
 #include "atltrace.h"
-#include <tchar.h>
 
 namespace Windows
 {
@@ -28,7 +35,6 @@ namespace Utilities
             if (EnablePrivilege((*i).c_str(), TRUE) == FALSE)
             {
                 ATLTRACE(_T("Unable to enable privilege: %s    --    GetLastError(): %d\n"), (*i).c_str(), ::GetLastError());
-                ATLTRACE(_T("File: %s Line: %d\n"), _T(__FILE__), __LINE__);
             }
         }
     }
