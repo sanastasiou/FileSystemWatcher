@@ -21,10 +21,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // ***********************************************************************
 
-using System;
-using NUnitLite.Runner;
 using NUnit.Framework.Internal;
-using Windows.Clr;
+using NUnitLite.Runner;
+using System;
 using System.Reflection;
 
 namespace TestFileSystemWatcher

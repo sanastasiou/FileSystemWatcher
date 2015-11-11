@@ -32,29 +32,29 @@ namespace Clr
 
     void FileWatcherBase::OnFileModified(const File::IFileSystemWatcher::FileSystemString & strFileName)
     {
-        System::String^ aClrStrFileName(msclr::interop::marshal_as<System::String^>(strFileName));
+        System::String^ aClrStrFileName(msclr::interop::marshal_as<System::String^>(Utilities::File::GetFileFromFilePath(strFileName.c_str())));
         System::String^ aClrDir(msclr::interop::marshal_as<System::String^>(Utilities::File::GetDirectoryFromFilePath(strFileName.c_str())));
         Changed(this, gcnew FileSystemEventArgs(System::IO::WatcherChangeTypes::Changed, aClrDir, aClrStrFileName));
     }
 
     void FileWatcherBase::OnFileRenamed(const File::IFileSystemWatcher::FileSystemString & newFileName, const File::IFileSystemWatcher::FileSystemString & oldFileName)
     {
-        System::String^ aClrNewFileName(msclr::interop::marshal_as<System::String^>(newFileName));
-        System::String^ aClrOldFileName(msclr::interop::marshal_as<System::String^>(oldFileName));
+        System::String^ aClrNewFileName(msclr::interop::marshal_as<System::String^>(Utilities::File::GetFileFromFilePath(newFileName.c_str())));
+        System::String^ aClrOldFileName(msclr::interop::marshal_as<System::String^>(Utilities::File::GetFileFromFilePath(oldFileName.c_str())));
         System::String^ aClrDir(msclr::interop::marshal_as<System::String^>(Utilities::File::GetDirectoryFromFilePath(oldFileName.c_str())));
         Renamed(this, gcnew RenamedEventArgs(System::IO::WatcherChangeTypes::Renamed,  aClrDir, aClrNewFileName, aClrOldFileName));
     }
 
     void FileWatcherBase::OnFileRemoved(const File::IFileSystemWatcher::FileSystemString & strFileName)
     {
-        System::String^ aClrStrFileName(msclr::interop::marshal_as<System::String^>(strFileName));
+        System::String^ aClrStrFileName(msclr::interop::marshal_as<System::String^>(Utilities::File::GetFileFromFilePath(strFileName.c_str())));
         System::String^ aClrDir(msclr::interop::marshal_as<System::String^>(Utilities::File::GetDirectoryFromFilePath(strFileName.c_str())));
         Deleted(this, gcnew FileSystemEventArgs(System::IO::WatcherChangeTypes::Deleted, aClrDir, aClrStrFileName));
     }
 
     void FileWatcherBase::OnFileAdded(const File::IFileSystemWatcher::FileSystemString & strFileName)
     {
-        System::String^ aClrStrFileName(msclr::interop::marshal_as<System::String^>(strFileName));
+        System::String^ aClrStrFileName(msclr::interop::marshal_as<System::String^>(Utilities::File::GetFileFromFilePath(strFileName.c_str())));
         System::String^ aClrDir(msclr::interop::marshal_as<System::String^>(Utilities::File::GetDirectoryFromFilePath(strFileName.c_str())));
         Created(this, gcnew FileSystemEventArgs(System::IO::WatcherChangeTypes::Created, aClrDir, aClrStrFileName));
     }

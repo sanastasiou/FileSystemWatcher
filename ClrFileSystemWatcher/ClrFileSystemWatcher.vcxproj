@@ -82,7 +82,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <AdditionalDependencies>WindowsUtilities.lib;NativeFileSystemWatcher.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
     </Link>
