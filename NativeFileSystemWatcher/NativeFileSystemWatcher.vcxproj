@@ -36,7 +36,7 @@
     <ProjectGuid>{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NativeFileSystemWatcher</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2015_Debug|Win32'" Label="Configuration">
