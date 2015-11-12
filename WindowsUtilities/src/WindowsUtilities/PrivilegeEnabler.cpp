@@ -1,14 +1,5 @@
 #include "WindowsUtilities/PrivilegeEnabler.h"
 
-//workaround for visual studio bug, atltrace.h doesn't know about _T -> fail
-#ifdef _UNICODE
-#define _T(x)      L ## x
-#else /* _UNICODE */
-#define _T(x)      x
-#endif /* _UNICODE */
-
-#include "atltrace.h"
-
 namespace Windows
 {
 namespace Utilities
@@ -30,11 +21,12 @@ namespace Utilities
     
     PrivilegeEnabler::PrivilegeEnabler(std::vector<std::wstring> const & privileges)
     {
+        _areAllPrivilegesEnabled = true;
         for (auto i = privileges.begin(); i != privileges.end(); ++i)
         {
             if (EnablePrivilege((*i).c_str(), TRUE) == FALSE)
             {
-                ATLTRACE(_T("Unable to enable privilege: %s    --    GetLastError(): %d\n"), (*i).c_str(), ::GetLastError());
+                _areAllPrivilegesEnabled = false;
             }
         }
     }
@@ -62,6 +54,16 @@ namespace Utilities
 
     PrivilegeEnabler::~PrivilegeEnabler()
     {
+    }
+
+    PrivilegeEnabler * PrivilegeEnabler::GetInstance()
+    {
+        return _pInstance;
+    }
+
+    bool PrivilegeEnabler::AreAllPrivilegesEnabled()const
+    {
+        return _areAllPrivilegesEnabled;
     }
 
 } // namespace Common

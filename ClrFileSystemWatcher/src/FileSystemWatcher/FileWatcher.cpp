@@ -67,6 +67,11 @@ namespace Clr
 
     FileWatcher::~FileWatcher()
     {
+        this->!FileWatcher();
+    }
+
+    FileWatcher::!FileWatcher()
+    {
         ::delete _pDirectoryWatcher;
     }
 
@@ -89,12 +94,11 @@ namespace Clr
 
     DelayedFileWatcher::~DelayedFileWatcher()
     {
-        ::delete _pDirectoryWatcher;
-        if (_pEventRouter != nullptr)
-        {
-            ::delete _pEventRouter;
-            _pEventRouter = nullptr;
-        }
+        this->!DelayedFileWatcher();
+    }
+
+    DelayedFileWatcher::!DelayedFileWatcher()
+    {
     }
 } // namespace Clr
 } // namespace Windows

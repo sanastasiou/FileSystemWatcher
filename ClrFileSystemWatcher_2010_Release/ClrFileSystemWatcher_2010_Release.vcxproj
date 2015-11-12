@@ -55,12 +55,12 @@
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)NativeFileSystemWatcher\\include;$(SolutionDir)ClrFileSystemWatcher\\include;$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NativeFileSystemWatcher\\include;$(SolutionDir)ClrFileSystemWatcher\\include;$(SolutionDir)WindowsUtilties\\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>WindowsBase.lib;NativeFileSystemWatcher.lib;</AdditionalDependencies>
+      <AdditionalDependencies>WindowsUtilties.lib;NativeFileSystemWatcher.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -69,12 +69,12 @@
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(SolutionDir)NativeFileSystemWatcher\\include;$(SolutionDir)ClrFileSystemWatcher\\include;$(SolutionDir)WindowsBase\\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NativeFileSystemWatcher\\include;$(SolutionDir)ClrFileSystemWatcher\\include;$(SolutionDir)WindowsUtilties\\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>WindowsBase.lib;NativeFileSystemWatcher.lib;</AdditionalDependencies>
+      <AdditionalDependencies>WindowsUtilties.lib;NativeFileSystemWatcher.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

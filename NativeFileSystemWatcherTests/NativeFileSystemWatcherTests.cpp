@@ -27,7 +27,7 @@ struct FileNotificationReceiver : Windows::File::IFileSystemWatcher
     {
     }
 
-    virtual void OnError(::DWORD const errorCode, const FileSystemString & directory)
+    virtual void OnError(::DWORD const, const FileSystemString &)
     {
         ++_notificationCount;
         ++_errorCount;
@@ -270,7 +270,6 @@ TEST_F(NativeFileSystemWatcherTestFixture, FileModificationTestFileAddition)
     ASSERT_TRUE(myWatcher->IsWatching());
 
     auto aTestDir = Windows::Utilities::File::GetDirectoryFromFilePath(_testFilePath.c_str());
-    auto lol = aTestDir.c_str();
     auto aTestFile (aTestDir += L"\\secondTestFile.txt");
     CreateNewFile(aTestFile);
 
@@ -300,7 +299,6 @@ TEST_F(NativeFileSystemWatcherTestFixture, FileModificationTestFileRenaming)
     ASSERT_TRUE(myWatcher->IsWatching());
 
     auto aTestDir = Windows::Utilities::File::GetDirectoryFromFilePath(_testFilePath.c_str());
-    auto lol = aTestDir.c_str();
     auto aTestFile(aTestDir += L"\\secondTestFile.txt");
     Windows::Common::Base::FileRename(_testFilePath.c_str(), aTestFile.c_str());
 
@@ -374,57 +372,59 @@ TEST_F(NativeFileSystemWatcherTestFixture, FileModificationErrorCountRestarting)
 
 TEST_F(NativeFileSystemWatcherTestFixture, FileModificationTestInclusionFilterFailedThenChanged)
 {
-    _fileNotificationReceiver = new FileNotificationReceiver();
-
-    Windows::File::NativeFileSystemWatcher * myWatcher = new Windows::File::NativeFileSystemWatcher(_cwd,
-        (FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_ATTRIBUTES),
-        true,
-        _fileNotificationReceiver,
-        L"*.atm",
-        L"",
-        true,
-        16384);
-    ASSERT_TRUE(myWatcher->IsWatching());
-
-    for (unsigned int i = 0; i < 100; ++i)
+    for (unsigned j = 0; j < 10; ++j)
     {
-        if (i % 2 == 0)
-        {
-            myWatcher->SetIncludeFilter(L"*.txt");
-        }
-        else
-        {
-            myWatcher->SetIncludeFilter(L"*.atm");
-        }
-        _fileNotificationReceiver->_additionCount        = 0U;
-        _fileNotificationReceiver->_deletionCount        = 0U;
-        _fileNotificationReceiver->_errorCount           = 0U;
-        _fileNotificationReceiver->_lastNotificationFile = L"";
-        _fileNotificationReceiver->_notificationCount    = 0U;
-        ::Sleep(10);
+        _fileNotificationReceiver = new FileNotificationReceiver();
 
-        std::ofstream myfile(_testFilePath);
-        myfile << "Writing this to a file.\n";
-        myfile << "Writing this to a file.\n";
-        myfile << "Writing this to a file.\n";
+        Windows::File::NativeFileSystemWatcher * myWatcher = new Windows::File::NativeFileSystemWatcher(_cwd,
+            (FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_ATTRIBUTES),
+            true,
+            _fileNotificationReceiver,
+            L"*.atm",
+            L"",
+            true,
+            16384);
+        ASSERT_TRUE(myWatcher->IsWatching());
 
-        ::Sleep(10);
+        for (unsigned int i = 0; i < 100; ++i)
+        {
+            if (i % 2 == 0)
+            {
+                myWatcher->SetIncludeFilter(L"*.txt");
+            }
+            else
+            {
+                myWatcher->SetIncludeFilter(L"*.atm");
+            }
+            _fileNotificationReceiver->_additionCount = 0U;
+            _fileNotificationReceiver->_deletionCount = 0U;
+            _fileNotificationReceiver->_errorCount = 0U;
+            _fileNotificationReceiver->_lastNotificationFile = L"";
+            _fileNotificationReceiver->_notificationCount = 0U;
+            ::Sleep(10);
 
-        myfile.close();
-        if (i % 2 != 0)
-        {
-            ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == L"");
-            ASSERT_EQ(_fileNotificationReceiver->_notificationCount, 0U);
+            std::ofstream myfile(_testFilePath);
+            myfile << "Writing this to a file.\n";
+            myfile << "Writing this to a file.\n";
+            myfile << "Writing this to a file.\n";
+
+            ::Sleep(10);
+
+            myfile.close();
+            if (i % 2 != 0)
+            {
+                ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == L"");
+                ASSERT_EQ(_fileNotificationReceiver->_notificationCount, 0U);
+            }
+            else
+            {
+                ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == _testFilePath);
+                ASSERT_GE(_fileNotificationReceiver->_notificationCount, 1U);
+            }
+            ASSERT_EQ(_fileNotificationReceiver->_errorCount, 0U);
         }
-        else
-        {
-            ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == _testFilePath);
-            ASSERT_GE(_fileNotificationReceiver->_notificationCount, 1U);
-        }
-        ASSERT_EQ(_fileNotificationReceiver->_errorCount, 0U);
+        ::delete myWatcher;
     }
-    ::delete myWatcher;
-
 }
 
 int main(int argc, wchar_t ** argv)

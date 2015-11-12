@@ -22,9 +22,14 @@ namespace Utilities
         static void Initialize(std::vector<std::wstring> const & privileges);
 
         ~PrivilegeEnabler();
+
+        static PrivilegeEnabler * GetInstance();
+
+        bool AreAllPrivilegesEnabled()const;
     private:
         static PrivilegeEnabler * _pInstance;
         static Windows::Threading::Mutex _mutex;
+        bool _areAllPrivilegesEnabled;
 
         PrivilegeEnabler(std::vector<std::wstring> const & privileges);
 

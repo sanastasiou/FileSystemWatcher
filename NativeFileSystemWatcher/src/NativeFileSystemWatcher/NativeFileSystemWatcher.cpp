@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include "WindowsUtilities/File.h"
-#include "atlpath.h"
+#include "WindowsUtilities/Base.h"
 
 namespace Windows
 {
@@ -199,10 +199,10 @@ namespace File
             }
 
             // If it could be a short filename, expand it.
-            LPCWSTR wszFilename = ::PathFindFileNameW(wstrFilename.c_str());
-            int len = lstrlenW(wszFilename);
+            auto wszFilename = Utilities::File::GetFileFromFilePath(wstrFilename.c_str());
+            auto len = wszFilename.length();
             // The maximum length of an 8.3 filename is twelve, including the dot.
-            if (len <= 12 && ::wcschr(wszFilename, L'~'))
+            if (len <= 12 && (wszFilename.find(L'~') != decltype(wszFilename)::npos))
             {
                 // Convert to the long filename form. Unfortunately, this
                 // does not work for deletions, so it's an imperfect fix.

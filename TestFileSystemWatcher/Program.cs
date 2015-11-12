@@ -29,6 +29,7 @@ using System.Reflection;
 namespace TestFileSystemWatcher
 {
     using NUnit.Framework;
+
     public class Program
     {
         string _testFile = string.Empty;
@@ -65,27 +66,34 @@ namespace TestFileSystemWatcher
         [Test]
         public void SmokeTest()
         {
-            FileWatcher myWatcher = new FileWatcher(@"C:\FooDirectoryLALALALALALALAWLWWLWLWL",
-                                                 (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
-                                                 true,
-                                                 @"*.atm",
-                                                 string.Empty,
-                                                 false,
-                                                 FileWatcherBase.STANDARD_BUFFER_SIZE);
-
-            myWatcher.Dispose();
+            try
+            {
+                var myWatcher = new Windows.Clr.FileWatcher(@"C:\FooDirectoryLALALALALALALAWLWWLWLWL",
+                                                            (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                            true,
+                                                            @"*.atm",
+                                                            string.Empty,
+                                                            false,
+                                                            Windows.Clr.FileWatcherBase.STANDARD_BUFFER_SIZE);
+            
+                myWatcher.Dispose();
+            }
+            catch
+            {
+                Console.WriteLine("Exception..");
+            }
         }
 
         [Test]
         public void EnsureNonExistantDirIsNotWatched()
         {
-            FileWatcher myWatcher = new FileWatcher(@"",
-                                                 (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
-                                                 true,
-                                                 @"*.atm",
-                                                 string.Empty,
-                                                 false,
-                                                 FileWatcherBase.STANDARD_BUFFER_SIZE);
+            Windows.Clr.FileWatcher myWatcher = new Windows.Clr.FileWatcher(@"",
+                                                                            (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                                            true,
+                                                                            @"*.atm",
+                                                                            string.Empty,
+                                                                            false,
+                                                                            Windows.Clr.FileWatcherBase.STANDARD_BUFFER_SIZE);
 
             Assert.IsFalse(myWatcher.IsWatching());
             myWatcher.Dispose();
@@ -95,13 +103,13 @@ namespace TestFileSystemWatcher
         public void EnsureExistantDirIsWatched()
         {
             string aBinDir = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            FileWatcher myWatcher = new FileWatcher(aBinDir,
-                                                 (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
-                                                 true,
-                                                 @"*.atm",
-                                                 string.Empty,
-                                                 false,
-                                                 FileWatcherBase.STANDARD_BUFFER_SIZE);
+            Windows.Clr.FileWatcher myWatcher = new Windows.Clr.FileWatcher(aBinDir,
+                                                                            (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                                            true,
+                                                                            @"*.atm",
+                                                                            string.Empty,
+                                                                            false,
+                                                                            Windows.Clr.FileWatcherBase.STANDARD_BUFFER_SIZE);
 
             Assert.IsTrue(myWatcher.IsWatching());
             myWatcher.Dispose();
@@ -110,13 +118,13 @@ namespace TestFileSystemWatcher
         [Test]
         public void FileModificationTest()
         {
-            FileWatcher myWatcher = new FileWatcher(System.IO.Path.GetDirectoryName(_testFile),
-                                                    (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
-                                                    true,
-                                                    @"*.txt",
-                                                    string.Empty,
-                                                    false,
-                                                    FileWatcherBase.STANDARD_BUFFER_SIZE);
+            Windows.Clr.FileWatcher myWatcher = new Windows.Clr.FileWatcher(System.IO.Path.GetDirectoryName(_testFile),
+                                                                            (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                                            true,
+                                                                            @"*.txt",
+                                                                            string.Empty,
+                                                                            false,
+                                                                            Windows.Clr.FileWatcherBase.STANDARD_BUFFER_SIZE);
             try
             {
                 bool notificationFired = false;
@@ -135,7 +143,7 @@ namespace TestFileSystemWatcher
                     aFile.Write(aBytesToWrite, 0, aBytesToWrite.Length);
                 }
 
-                System.Threading.Thread.Sleep(1000);                
+                System.Threading.Thread.Sleep(1000);
 
                 Assert.True(notificationFired);
                 Assert.AreEqual(count, 1);

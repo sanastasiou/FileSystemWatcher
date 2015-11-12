@@ -12,7 +12,7 @@ namespace Windows
 {
 namespace Clr
 {
-    public ref class FileWatcherBase
+    public ref class FileWatcherBase : public IDisposable
     {
     public:
         event System::EventHandler<FileSystemEventArgs^>^ Changed;
@@ -38,6 +38,11 @@ namespace Clr
 
         virtual ~FileWatcherBase()
         {
+            this->!FileWatcherBase();
+        }
+
+        !FileWatcherBase()
+        {
         }
 
         static const std::vector< ::BYTE >::size_type STANDARD_BUFFER_SIZE = 65535U;
@@ -45,7 +50,7 @@ namespace Clr
         EventRouter * _pEventRouter;
     };
 
-    public ref class FileWatcher : public FileWatcherBase
+    public ref class FileWatcher : public FileWatcherBase, IDisposable
     {
     public:
         FileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, bool restartOnError, std::vector<::BYTE>::size_type bufferSize);
@@ -53,6 +58,9 @@ namespace Clr
         bool IsWatching();
 
         ~FileWatcher();
+
+    protected:
+        !FileWatcher();
 
     private:
         File::FileSystemWatcherBase * _pDirectoryWatcher;
@@ -64,6 +72,9 @@ namespace Clr
         DelayedFileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, bool restartOnError, ::DWORD const delay, std::vector<::BYTE>::size_type bufferSize);
 
         virtual ~DelayedFileWatcher();
+
+    protected:
+        !DelayedFileWatcher();
 
     private:
         File::FileSystemWatcherBase * _pDirectoryWatcher;
