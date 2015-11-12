@@ -418,7 +418,7 @@ namespace internal__
 
     bool Base::MakeDir(const char* dir, LPSECURITY_ATTRIBUTES attributes /*= nullptr*/)
     {
-        return MakeDir(Utilities::String::string_cast<std::wstring>(dir).c_str());
+        return MakeDir(Utilities::String::string_cast<std::wstring>(dir).c_str(), attributes);
     }
 
     bool Base::MakeDir(const wchar_t * dir, LPSECURITY_ATTRIBUTES attributes /*= nullptr*/)

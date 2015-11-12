@@ -1,9 +1,7 @@
 #include "NativeFileSystemWatcher/IFileSystemWatcher.h"
 #include <algorithm>
-#pragma unmanaged
 #include "boost/algorithm/string/classification.hpp"
 #include "boost/algorithm/string/split.hpp"
-#pragma managed
 
 namespace Windows
 {
