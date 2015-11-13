@@ -67,12 +67,12 @@ namespace Clr
 
     FileWatcher::~FileWatcher()
     {
-        this->!FileWatcher();
+        ::delete _pDirectoryWatcher;
     }
 
     FileWatcher::!FileWatcher()
     {
-        ::delete _pDirectoryWatcher;
+
     }
 
     DelayedFileWatcher::DelayedFileWatcher(String^ dir, ::DWORD filterFlags, bool includeSubDir, String^ include, String^ exclude, bool restartOnError, ::DWORD const delay, std::vector<::BYTE>::size_type bufferSize) :
@@ -94,7 +94,7 @@ namespace Clr
 
     DelayedFileWatcher::~DelayedFileWatcher()
     {
-        this->!DelayedFileWatcher();
+        ::delete _pDirectoryWatcher;
     }
 
     DelayedFileWatcher::!DelayedFileWatcher()
