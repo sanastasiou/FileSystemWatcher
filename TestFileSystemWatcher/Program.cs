@@ -156,6 +156,55 @@ namespace TestFileSystemWatcher
             }
         }
 
+        [Test]
+        public void EnduranceTestCreationDeletion()
+        {
+            for (uint j = 0; j < 10000; ++j)
+            {
+                try
+                {
+                    Windows.Clr.FileWatcher myWatcher = new Windows.Clr.FileWatcher(System.IO.Path.GetDirectoryName(_testFile),
+                                                                                (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                                                true,
+                                                                                @"*.txt",
+                                                                                string.Empty,
+                                                                                false,
+                                                                                Windows.Clr.FileWatcherBase.STANDARD_BUFFER_SIZE);
+
+                    bool notificationFired = false;
+                    int count = 0;
+                    EventHandler<System.IO.FileSystemEventArgs> handler = (s, e) =>
+                    {
+                        notificationFired = true;
+                        ++count;
+                    };
+                    myWatcher.Changed += handler;
+
+                    for (uint i = 0; i < 10; ++i)
+                    {
+
+                        //modify file
+                        using (var aFile = System.IO.File.OpenWrite(_testFile))
+                        {
+                            var aBytesToWrite = GetBytes("Some extra stuff");
+                            aFile.Write(aBytesToWrite, 0, aBytesToWrite.Length);
+                        }
+
+                        System.Threading.Thread.Sleep(1000);
+                    }
+
+                    Assert.True(notificationFired);
+                    Assert.AreEqual(count, 1);
+                    myWatcher.Changed -= handler;
+                    myWatcher.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
         // The main program executes the tests. Output may be routed to
         // various locations, depending on the arguments passed.
         //
