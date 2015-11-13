@@ -1,3 +1,5 @@
+#pragma managed(push, off)
+
 #include "NativeFileSystemWatcher/DelayedFileSystemWatcher.h"
 
 namespace Windows
@@ -26,3 +28,5 @@ namespace File
 
 } //namespace File
 } //namespace Windows
+
+#pragma managed(pop)

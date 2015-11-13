@@ -34,8 +34,8 @@
     <ClCompile Include="src\NativeFileSystemWatcher\IFileSystemWatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ClCompile Include="src\NativeFileSystemWatcher\ConqurrentQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

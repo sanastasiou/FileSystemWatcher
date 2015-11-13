@@ -273,7 +273,7 @@ TEST_F(NativeFileSystemWatcherTestFixture, FileModificationTestFileAddition)
     auto aTestFile (aTestDir += L"\\secondTestFile.txt");
     CreateNewFile(aTestFile);
 
-    ::Sleep(1);
+    ::Sleep(10);
 
     ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == aTestFile);
     ASSERT_GE(_fileNotificationReceiver->_notificationCount, 1U);

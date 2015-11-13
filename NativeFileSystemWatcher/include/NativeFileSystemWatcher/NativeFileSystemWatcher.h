@@ -7,6 +7,8 @@
 #define WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API __declspec (dllimport)
 #endif
 
+#pragma managed(push, off)
+
 #include "WindowsUtilities/File.h"
 #include "WindowsUtilities/Thread.h"
 #include "WindowsUtilities/Mutex.h"
@@ -84,6 +86,9 @@ namespace File
         bool StartDirectoryWatching();
 
         static void WINAPI DirectoryNotification(::DWORD dwErrorCode, ::DWORD dwNumberOfBytesTransfered, ::LPOVERLAPPED lpOverlapped );
+
+        NativeFileSystemWatcher           (const NativeFileSystemWatcher&) = delete;
+        NativeFileSystemWatcher& operator=(const NativeFileSystemWatcher&) = delete;
     }; //class NativeFileSystemWatcher
 
     inline bool NativeFileSystemWatcher::IsAutomaticRestartingEnabled()const
@@ -117,5 +122,7 @@ namespace File
     }
 } // namespace File
 } // namespace Windows
+
+#pragma managed(pop)
 
 #endif //#ifndef WINDOWS_FILE_NATIVESYSTEMWATCHER_H__

@@ -1,3 +1,5 @@
+#pragma managed(push, off)
+
 #include "NativeFileSystemWatcher/NativeFileSystemWatcher.h"
 #include "WindowsUtilities/PrivilegeEnabler.h"
 #include <vector>
@@ -296,3 +298,5 @@ namespace File
     }
 } // namespace File
 } // namespace Windows
+
+#pragma managed(pop)

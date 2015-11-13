@@ -7,6 +7,8 @@
 #define WINDOWS_FILE_IFILESYSTEMWATCHER_API __declspec (dllimport)
 #endif
 
+#pragma managed(push, off)
+
 #include "Windows.h"
 #include<TCHAR.H> // Implicit or explicit include
 #include <string>
@@ -162,7 +164,7 @@ namespace File
             _terminate = true;
         }
 
-        ConqurrentQueue<std::pair<std::wstring, ::DWORD> > & GetEventQueue()
+        ConqurrentQueue & GetEventQueue()
         {
             return _eventQueue;
         }
@@ -210,7 +212,7 @@ namespace File
         std::vector<::BYTE> _buffer;                                    //!< Data buffer for the request. Since the memory is allocated by malloc, it will always be aligned as required by ReadDirectoryChangesW().
         std::vector<::BYTE> _backupBuffer;                              //!< Double buffer strategy so that we can issue a new read request before we process the current buffer.
         std::vector<BYTE>::size_type const BUFFER_SIZE;                 //!< Max notification buffer size.
-        ConqurrentQueue<std::pair<std::wstring, ::DWORD> > _eventQueue; //!< Holds file system events.
+        ConqurrentQueue _eventQueue;                                    //!< Holds file system events.
         bool _isIncludeFilterActive;                                    //!< Indicates if include filter is active.
         bool _isExcludeFilterActive;                                    //!< Indicates if exclude filter is active.
         std::vector<std::wstring> _includeFilters;                      //!< Stores include filters.
@@ -227,6 +229,9 @@ namespace File
         *   If true, indicates that at least one filter is present. Filters are stored in "filters" parameter.
         */
         bool ParseFilter(std::wstring const & filter, std::vector<std::wstring> & filters)const;
+
+        FileSystemWatcherBase           (const FileSystemWatcherBase&) = delete;
+        FileSystemWatcherBase& operator=(const FileSystemWatcherBase&) = delete;
     };
 
     inline void FileSystemWatcherBase::ClassifyAndPostEvent(std::pair<std::wstring, ::DWORD> const & e)
@@ -283,5 +288,7 @@ namespace File
     }
 } // namespace File
 } // namespace Windows
+
+#pragma managed(pop)
 
 #endif //#ifndef WINDOWS_FILE_IFILESYSTEMWATCHER_H__

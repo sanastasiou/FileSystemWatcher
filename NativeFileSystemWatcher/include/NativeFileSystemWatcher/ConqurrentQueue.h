@@ -1,9 +1,17 @@
 #ifndef WINDOWS_FILE_CONQURRENT_QUEUE_H__
 #define WINDOWS_FILE_CONQURRENT_QUEUE_H__
 
-#include <queue>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition_variable.hpp>
+#if defined(WINDOWS_FILE_CONQURRENT_QUEUE_DLL_EXPORTS)
+#define WINDOWS_FILE_CONQURRENT_QUEUE_API __declspec (dllexport)
+#else
+#define WINDOWS_FILE_CONQURRENT_QUEUE_API __declspec (dllimport)
+#endif
+
+#pragma managed(push, off)
+
+#include "Windows.h"
+#include <utility>
+#include <string>
 
 namespace Windows
 {
@@ -13,65 +21,33 @@ namespace File
     * Class based on excellent example found here : https://www.justsoftwaresolutions.co.uk/threading/implementing-a-thread-safe-queue-using-condition-variables.html
     * Allow n-n consumers/producers to use a single queue.
     */
-    template<typename Data>
-        class ConqurrentQueue
-        {
-        private:
-            std::queue<Data> _queue;
-            mutable boost::mutex _mutex;
-            boost::condition_variable _conditionVariable;
-        public:
-            typedef typename std::queue<Data>::value_type value_type;
+    class WINDOWS_FILE_CONQURRENT_QUEUE_API ConqurrentQueue
+    {
+    private:
+        void * _queue;             //std::queue<std::pair<std::wstring, ::DWORD> > _queue;
+        mutable void * _mutex;     // std::mutex _mutex;
+        void * _conditionVariable; // std::condition_variable;
+    public:
+        ConqurrentQueue();
 
-            void ClearSync()
-            {
-                while (!_queue.empty())
-                {
-                    _queue.pop();
-                }
-            }
+        virtual ~ConqurrentQueue();
 
-            void push(Data const& data)
-            {
-                boost::mutex::scoped_lock lock(_mutex);
-                _queue.push(data);
-                lock.unlock();
-                _conditionVariable.notify_one();
-            }
+        typedef std::pair<std::wstring, ::DWORD> value_type;
 
-            bool empty() const
-            {
-                boost::mutex::scoped_lock lock(_mutex);
-                return _queue.empty();
-            }
+        void ClearSync();
 
-            bool try_pop(Data& popped_value)
-            {
-                boost::mutex::scoped_lock lock(_mutex);
-                if (_queue.empty())
-                {
-                    return false;
-                }
+        void push(value_type const& data);
 
-                popped_value = _queue.front();
-                _queue.pop();
-                return true;
-            }
+        bool empty() const;
 
-            void wait_and_pop(Data& popped_value)
-            {
-                boost::mutex::scoped_lock lock(_mutex);
-                while (_queue.empty())
-                {
-                    _conditionVariable.wait(lock);
-                }
+        bool try_pop(value_type& popped_value);
 
-                popped_value = _queue.front();
-                _queue.pop();
-            }
+        void wait_and_pop(value_type& popped_value);
 
-        }; // class ConqurrentQueue
+    }; // class ConqurrentQueue
 } // namespace File
 } // namespace Windows
+
+#pragma managed(pop)
 
 #endif //#ifndef WINDOWS_FILE_CONQURRENT_QUEUE_H__

@@ -1,7 +1,7 @@
+#pragma managed(push, off)
+
 #include "NativeFileSystemWatcher/IFileSystemWatcher.h"
 #include <algorithm>
-#include "boost/algorithm/string/classification.hpp"
-#include "boost/algorithm/string/split.hpp"
 
 namespace Windows
 {
@@ -55,7 +55,7 @@ namespace File
     {
         while (_popEvents)
         {
-            ConqurrentQueue<std::pair<std::wstring, ::DWORD> >::value_type e;
+            ConqurrentQueue::value_type e;
             _eventQueue.wait_and_pop(e);
             ClassifyAndPostEvent(e);
         }
@@ -85,7 +85,18 @@ namespace File
 
     bool FileSystemWatcherBase::ParseFilter(std::wstring const & filter, std::vector<std::wstring> & filters)const
     {
-        return !boost::split(filters, filter, boost::is_any_of(L";"), boost::token_compress_on).empty();
+        auto start = 0U;
+        auto end = filter.find(L";");
+        while (end != std::wstring::npos)
+        {
+            filters.push_back(filter.substr(start, end - start));
+            start = end + 1;
+            end = filter.find(L";", start);
+        }
+
+        filters.push_back(filter.substr(start, end));
+
+        return !filters.empty();
     }
 
     void FileSystemWatcherBase::SetIncludeFilter(IFileSystemWatcher::FileSystemString const & newInclusionFilter)
@@ -113,3 +124,5 @@ namespace File
     }
 } // namespace File
 } // namespace Windows
+
+#pragma managed(pop)
