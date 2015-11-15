@@ -7,7 +7,7 @@
 #define WINDOWS_UTILITIES_FILE_API __declspec (dllimport)
 #endif
 
-#include <Windows.h>
+#include "Windows.h"
 #include <string>
 #include <vector>
 #include <algorithm>

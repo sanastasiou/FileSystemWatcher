@@ -159,7 +159,7 @@ namespace TestFileSystemWatcher
         [Test]
         public void EnduranceTestCreationDeletion()
         {
-            for (uint j = 0; j < 10000; ++j)
+            for (uint j = 0; j < 5; ++j)
             {
                 try
                 {
@@ -194,7 +194,7 @@ namespace TestFileSystemWatcher
                     }
 
                     Assert.True(notificationFired);
-                    Assert.AreEqual(count, 1);
+                    Assert.AreEqual(count, 10);
                     myWatcher.Changed -= handler;
                     myWatcher.Dispose();
                 }

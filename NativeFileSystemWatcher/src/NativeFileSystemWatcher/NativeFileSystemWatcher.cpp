@@ -135,27 +135,7 @@ namespace File
         _restartOnError = restart;
     }
 
-    void NativeFileSystemWatcher::OnFileModified(const FileSystemString & strFileName)
-    {
-        _directoryInfo._eventHandler->OnFileModified(strFileName);
-    }
-
-    void NativeFileSystemWatcher::OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName)
-    {
-        _directoryInfo._eventHandler->OnFileRenamed(newFileName, oldFileName);
-    }
-
-    void NativeFileSystemWatcher::OnFileRemoved(const FileSystemString & strFileName)
-    {
-        _directoryInfo._eventHandler->OnFileRemoved(strFileName);
-    }
-
-    void NativeFileSystemWatcher::OnFileAdded(const FileSystemString & strFileName)
-    {
-        _directoryInfo._eventHandler->OnFileAdded(strFileName);
-    }
-
-    void NativeFileSystemWatcher::OnError(::DWORD const, const FileSystemString &)
+    void NativeFileSystemWatcher::OnError()
     {
         if (_isWatching)
         {

@@ -7,10 +7,6 @@ namespace Windows
 {
 namespace File
 {
-    IFileSystemWatcher::~IFileSystemWatcher()
-    {
-    }
-
     FileSystemWatcherBase::FileSystemWatcherBase(FileSystemString const & dir,
         ::DWORD changeFlags,
         ::BOOL const watchSubDir,

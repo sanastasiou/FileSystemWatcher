@@ -20,9 +20,9 @@ namespace File
 
     ConqurrentQueue::~ConqurrentQueue()
     {
-        ::delete static_cast<std::queue<value_type>*>(_queue); _queue                          = nullptr;
-        ::delete static_cast<std::mutex*>(_mutex); _mutex                                      = nullptr;
-        ::delete static_cast<std::condition_variable*>(_conditionVariable); _conditionVariable = nullptr;
+        if( _queue != nullptr)             ::delete static_cast<std::queue<value_type>*>(_queue); _queue                          = nullptr;
+        if( _mutex != nullptr)             ::delete static_cast<std::mutex*>(_mutex); _mutex                                      = nullptr;
+        if( _conditionVariable != nullptr) ::delete static_cast<std::condition_variable*>(_conditionVariable); _conditionVariable = nullptr;
     }
 
     void ConqurrentQueue::ClearSync()

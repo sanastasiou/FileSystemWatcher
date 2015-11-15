@@ -67,7 +67,11 @@ namespace Clr
 
     FileWatcher::~FileWatcher()
     {
-        ::delete _pDirectoryWatcher;
+        if (_pDirectoryWatcher != nullptr)
+        {
+            ::delete _pDirectoryWatcher;
+            _pDirectoryWatcher = nullptr;
+        }
     }
 
     FileWatcher::!FileWatcher()

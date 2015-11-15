@@ -25,7 +25,6 @@ namespace File
     struct IFileSystemWatcher
     {
         typedef std::basic_string< ::TCHAR > FileSystemString;
-
         /**
         * \brief   Occurs when a file was modified.
         *
@@ -41,14 +40,18 @@ namespace File
 
         WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnError(::DWORD const errorCode, const FileSystemString & directory) = 0;
 
+    };
+
+    struct FileSystemWatcherBase
+    {
         struct DirectoryInfo
         {
-            DirectoryInfo( FileSystemString const & dir, 
-                           ::DWORD const changeFlags, 
-                           ::BOOL const watchSubDirectories,
-                           IFileSystemWatcher * eventHandler, 
-                           FileSystemString const & includeFilter,
-                           FileSystemString const & excludeFilter):
+            DirectoryInfo(IFileSystemWatcher::FileSystemString const & dir,
+                ::DWORD const changeFlags,
+                ::BOOL const watchSubDirectories,
+                IFileSystemWatcher * eventHandler,
+                IFileSystemWatcher::FileSystemString const & includeFilter,
+                IFileSystemWatcher::FileSystemString const & excludeFilter) :
                 _dir(dir),
                 _changeFlags(changeFlags),
                 _watchSubDirectories(watchSubDirectories),
@@ -57,19 +60,14 @@ namespace File
                 _excludeFilter(excludeFilter)
             {}
 
-            FileSystemString _dir;
+            IFileSystemWatcher::FileSystemString _dir;
             ::DWORD _changeFlags;
             ::BOOL _watchSubDirectories;
             IFileSystemWatcher * _eventHandler;
-            FileSystemString _includeFilter;
-            FileSystemString _excludeFilter;
+            IFileSystemWatcher::FileSystemString _includeFilter;
+            IFileSystemWatcher::FileSystemString _excludeFilter;
         };
 
-        WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual ~IFileSystemWatcher();
-    };
-
-    struct FileSystemWatcherBase : IFileSystemWatcher
-    {
         typedef std::basic_string< ::TCHAR > FileSystemString;
 
         virtual bool IsWatching()const = 0;
@@ -206,6 +204,8 @@ namespace File
         void SetExcludeFilter(IFileSystemWatcher::FileSystemString const & newExclusionFilter);
 
         void ResetOverlappedStructure();
+
+        WINDOWS_FILE_IFILESYSTEMWATCHER_API virtual void OnError() = 0;
     private:
         static const std::size_t MAX_BUFFER_SIZE = 65535U;
 
@@ -239,26 +239,41 @@ namespace File
         switch (e.second)
         {
         case FILE_ACTION_ADDED:
-            _directoryInfo._eventHandler->OnFileAdded(e.first);
+            if (_directoryInfo._eventHandler != nullptr)
+            {
+                _directoryInfo._eventHandler->OnFileAdded(e.first);
+            }
             break;
         case FILE_ACTION_REMOVED:
-            _directoryInfo._eventHandler->OnFileRemoved(e.first);
+            if (_directoryInfo._eventHandler != nullptr)
+            {
+                _directoryInfo._eventHandler->OnFileRemoved(e.first);
+            }
             break;
         case FILE_ACTION_MODIFIED:
-            _directoryInfo._eventHandler->OnFileModified(e.first);
+            if (_directoryInfo._eventHandler != nullptr)
+            {
+                _directoryInfo._eventHandler->OnFileModified(e.first);
+            }
             break;
         case FILE_ACTION_RENAMED_OLD_NAME:
             _tmpOldFileName = e.first;
             //this has to come always first, in case a file name is changed
             break;
         case FILE_ACTION_RENAMED_NEW_NAME:
-            //after a FILE_ACTION_RENAMED_OLD_NAME this has to come next, only then we have the complete event to dispatch
-            _directoryInfo._eventHandler->OnFileRenamed(e.first, _tmpOldFileName);
+            if (_directoryInfo._eventHandler != nullptr)
+            {
+                //after a FILE_ACTION_RENAMED_OLD_NAME this has to come next, only then we have the complete event to dispatch
+                _directoryInfo._eventHandler->OnFileRenamed(e.first, _tmpOldFileName);
+            }
             break;
         default:
             //error
-            _directoryInfo._eventHandler->OnError(e.second, _directoryInfo._dir);
-            OnError(e.second, _directoryInfo._dir);
+            if (_directoryInfo._eventHandler != nullptr)
+            {
+                _directoryInfo._eventHandler->OnError(e.second, _directoryInfo._dir);
+            }
+            OnError();
             break;
         }
     }

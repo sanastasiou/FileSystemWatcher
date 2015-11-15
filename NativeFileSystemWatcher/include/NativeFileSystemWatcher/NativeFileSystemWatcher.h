@@ -48,15 +48,7 @@ namespace File
                                                  
         WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API void SetRestartOnError(bool const restart);
 
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileModified(const FileSystemString & strFileName);
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRenamed(const FileSystemString & newFileName, const FileSystemString & oldFileName);
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileRemoved(const FileSystemString & strFileName);
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnFileAdded(const FileSystemString & strFileName);
-
-        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnError(::DWORD const, const FileSystemString &);
+        WINDOWS_FILE_NATIVEFILESYSTEMWATCHER_API virtual void OnError();
 
         bool IsAutomaticRestartingEnabled()const;
 

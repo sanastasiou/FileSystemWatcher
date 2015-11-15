@@ -35,6 +35,7 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		VisualStudio2010_Release|x86 = VisualStudio2010_Release|x86
+		VisualStudio2013_Debug|x86 = VisualStudio2013_Debug|x86
 		VisualStudio2013_Release|x86 = VisualStudio2013_Release|x86
 		VisualStudio2015_Debug|x86 = VisualStudio2015_Debug|x86
 		VisualStudio2015_Release|x86 = VisualStudio2015_Release|x86
@@ -42,6 +43,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2010_Release|x86.ActiveCfg = VisualStudio2010_Release|x86
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2010_Release|x86.Build.0 = VisualStudio2010_Release|x86
+		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2013_Debug|x86.ActiveCfg = VisualStudio2013_Debug|x86
+		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2013_Debug|x86.Build.0 = VisualStudio2013_Debug|x86
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2013_Release|x86.ActiveCfg = VisualStudio2013_Release|x86
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2013_Release|x86.Build.0 = VisualStudio2013_Release|x86
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Debug|x86
@@ -50,6 +53,8 @@ Global
 		{14216170-4B4B-43F5-B248-6E4A142EC062}.VisualStudio2015_Release|x86.Build.0 = VisualStudio2015_Release|x86
 		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2010_Release|x86.ActiveCfg = VisualStudio2015_Release|Win32
 		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2010_Release|x86.Build.0 = VisualStudio2015_Release|Win32
+		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2013_Debug|x86.ActiveCfg = VisualStudio2013_Debug|Win32
+		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2013_Debug|x86.Build.0 = VisualStudio2013_Debug|Win32
 		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2013_Release|x86.ActiveCfg = VisualStudio2013_Release|Win32
 		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2013_Release|x86.Build.0 = VisualStudio2013_Release|Win32
 		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Debug|Win32
@@ -58,6 +63,8 @@ Global
 		{1BF08213-2A89-4B21-BA60-71059A536C31}.VisualStudio2015_Release|x86.Build.0 = VisualStudio2015_Release|Win32
 		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2010_Release|x86.ActiveCfg = VisualStudio2010_Release|Win32
 		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2010_Release|x86.Build.0 = VisualStudio2010_Release|Win32
+		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2013_Debug|x86.ActiveCfg = VisualStudio2013_Debug|Win32
+		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2013_Debug|x86.Build.0 = VisualStudio2013_Debug|Win32
 		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2013_Release|x86.ActiveCfg = VisualStudio2013_Release|Win32
 		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2013_Release|x86.Build.0 = VisualStudio2013_Release|Win32
 		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Debug|Win32
@@ -66,6 +73,8 @@ Global
 		{127FD5A5-1838-47D2-89DE-9A91BEC7B714}.VisualStudio2015_Release|x86.Build.0 = VisualStudio2015_Release|Win32
 		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2010_Release|x86.ActiveCfg = VisualStudio2010_Release|Win32
 		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2010_Release|x86.Build.0 = VisualStudio2010_Release|Win32
+		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2013_Debug|x86.ActiveCfg = VisualStudio2013_Debug|Win32
+		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2013_Debug|x86.Build.0 = VisualStudio2013_Debug|Win32
 		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2013_Release|x86.ActiveCfg = VisualStudio2013_Release|Win32
 		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2013_Release|x86.Build.0 = VisualStudio2013_Release|Win32
 		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Debug|Win32
@@ -74,6 +83,8 @@ Global
 		{698E6856-5EF7-40A7-8AA3-191267B8379B}.VisualStudio2015_Release|x86.Build.0 = VisualStudio2015_Release|Win32
 		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2010_Release|x86.ActiveCfg = VisualStudio2010_Release|Win32
 		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2010_Release|x86.Build.0 = VisualStudio2010_Release|Win32
+		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2013_Debug|x86.ActiveCfg = VisualStudio2013_Debug|Win32
+		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2013_Debug|x86.Build.0 = VisualStudio2013_Debug|Win32
 		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2013_Release|x86.ActiveCfg = VisualStudio2013_Release|Win32
 		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2013_Release|x86.Build.0 = VisualStudio2013_Release|Win32
 		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Debug|Win32
@@ -82,6 +93,8 @@ Global
 		{FFC859B4-B421-4C47-B5A4-0A0B1A2BB25E}.VisualStudio2015_Release|x86.Build.0 = VisualStudio2015_Release|Win32
 		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2010_Release|x86.ActiveCfg = VisualStudio2010_Release|Win32
 		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2010_Release|x86.Build.0 = VisualStudio2010_Release|Win32
+		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2013_Debug|x86.ActiveCfg = VisualStudio2013_Debug|Win32
+		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2013_Debug|x86.Build.0 = VisualStudio2013_Debug|Win32
 		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2013_Release|x86.ActiveCfg = VisualStudio2013_Release|Win32
 		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2013_Release|x86.Build.0 = VisualStudio2013_Release|Win32
 		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2015_Debug|Win32
@@ -90,6 +103,8 @@ Global
 		{14A26753-E084-43D1-B664-C707A2B798E4}.VisualStudio2015_Release|x86.Build.0 = VisualStudio2015_Release|Win32
 		{53EBD8BE-CA39-4F60-9E24-140C993E5E86}.VisualStudio2010_Release|x86.ActiveCfg = VisualStudio2010_Release|Win32
 		{53EBD8BE-CA39-4F60-9E24-140C993E5E86}.VisualStudio2010_Release|x86.Build.0 = VisualStudio2010_Release|Win32
+		{53EBD8BE-CA39-4F60-9E24-140C993E5E86}.VisualStudio2013_Debug|x86.ActiveCfg = VisualStudio2013_Debug|Win32
+		{53EBD8BE-CA39-4F60-9E24-140C993E5E86}.VisualStudio2013_Debug|x86.Build.0 = VisualStudio2013_Debug|Win32
 		{53EBD8BE-CA39-4F60-9E24-140C993E5E86}.VisualStudio2013_Release|x86.ActiveCfg = VisualStudio2013_Release|Win32
 		{53EBD8BE-CA39-4F60-9E24-140C993E5E86}.VisualStudio2013_Release|x86.Build.0 = VisualStudio2013_Release|Win32
 		{53EBD8BE-CA39-4F60-9E24-140C993E5E86}.VisualStudio2015_Debug|x86.ActiveCfg = VisualStudio2010_Release|Win32
