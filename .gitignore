@@ -50,3 +50,6 @@ VisualStudio2010_Release/
 NativeFileSystemWatcherTests/VisualStudio2013_Release/
 VisualStudio2013_Release/
 *.exp
+NativeFileSystemWatcher/VisualStudio2013_Debug/
+NativeFileSystemWatcherTests/VisualStudio2013_Debug/
+VisualStudio2013_Debug/
