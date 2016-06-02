@@ -53,3 +53,5 @@ VisualStudio2013_Release/
 NativeFileSystemWatcher/VisualStudio2013_Debug/
 NativeFileSystemWatcherTests/VisualStudio2013_Debug/
 VisualStudio2013_Debug/
+*.user
+*.lib
