@@ -26,9 +26,10 @@ using NUnitLite.Runner;
 using System;
 using System.Reflection;
 
-namespace TestFileSystemWatcher
+namespace TestClrFileSystemWatcher
 {
     using NUnit.Framework;
+    using System.Threading;
 
     public class Program
     {
@@ -63,6 +64,7 @@ namespace TestFileSystemWatcher
             }
         }
 
+#if !DEBUG_TEST
         [Test]
         public void SmokeTest()
         {
@@ -125,6 +127,7 @@ namespace TestFileSystemWatcher
                                                                             string.Empty,
                                                                             false,
                                                                             Windows.Clr.FileWatcherBase.STANDARD_BUFFER_SIZE);
+            myWatcher.Renamed += myWatcher_Renamed;
             try
             {
                 bool notificationFired = false;
@@ -133,6 +136,7 @@ namespace TestFileSystemWatcher
                 {
                     notificationFired = true;
                     ++count;
+                    Console.WriteLine(String.Format("Full path : {0}, name : {1}, change : {2}", e.FullPath, e.Name, e.ChangeType));
                 };
                 myWatcher.Changed += handler;
 
@@ -203,6 +207,74 @@ namespace TestFileSystemWatcher
                     Console.WriteLine(ex.Message);
                 }
             }
+        }
+
+#else
+        [Test]
+        public void FileModificationFromExternalSourceTest()
+        {
+            try
+            {
+                if (RunWithTimeout(LongRunningOperation, TimeSpan.FromMilliseconds(3000000)))
+                {
+                    Console.WriteLine("Worker thread finished.");
+                }
+                else
+                {
+                    Console.WriteLine("Worker thread was aborted.");
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+#endif 
+        bool RunWithTimeout(ThreadStart threadStart, TimeSpan timeout)
+        {
+            Thread workerThread = new Thread(threadStart);
+
+            workerThread.Start();
+
+            bool finished = workerThread.Join(timeout);
+            if (!finished)
+                workerThread.Abort();
+
+            return finished;
+        }
+
+        void LongRunningOperation()
+        {
+            Windows.Clr.FileWatcher myWatcher = new Windows.Clr.FileWatcher("C:\\Work\\RTextNpp\\TestFiles",
+                                                                            (uint)(System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.CreationTime | System.IO.NotifyFilters.Size | System.IO.NotifyFilters.LastAccess | System.IO.NotifyFilters.Attributes),
+                                                                            true,
+                                                                            @"*.atm",
+                                                                            string.Empty,
+                                                                            false,
+                                                                            Windows.Clr.FileWatcherBase.STANDARD_BUFFER_SIZE);
+            myWatcher.Renamed += myWatcher_Renamed;
+            myWatcher.Changed += myWatcher_Changed;
+            myWatcher.Deleted += myWatcher_Deleted;
+            Assert.True(myWatcher.IsWatching());
+            while (true)
+            {
+                Thread.Sleep(100000);
+            }
+
+        }
+
+        void myWatcher_Deleted(object sender, System.IO.FileSystemEventArgs e)
+        {
+            Console.WriteLine(String.Format("myWatcher_Deleted : {0}, changed : {1}, name : {2}", e.FullPath, e.ChangeType, e.Name));
+        }
+
+        void myWatcher_Changed(object sender, System.IO.FileSystemEventArgs e)
+        {
+            Console.WriteLine(String.Format("myWatcher_Changed : {0}, changed : {1}, name : {2}", e.FullPath, e.ChangeType, e.Name));
+        }
+
+        void myWatcher_Renamed(object sender, System.IO.RenamedEventArgs e)
+        {
+            Console.WriteLine(String.Format("myWatcher_Renamed : {0}, new full path : {1}, changed : {2}, name : {3}", e.OldFullPath, e.FullPath, e.ChangeType, e.Name));
         }
 
         // The main program executes the tests. Output may be routed to

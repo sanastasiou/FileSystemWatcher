@@ -35,7 +35,7 @@ namespace internal__
 
         if (aRetval == 0) 
         {
-            throw std::exception(std::string("Could not resolve absolute path from relative path : " + std::string(relativePath)).c_str());
+            return "Error : std::string File::GetFullPath( char const * relativePath) : Could not retrieve path from : " + std::string(relativePath);
         }
 
         return std::string( aBuffer );
@@ -50,7 +50,7 @@ namespace internal__
 
         if (aRetval == 0)
         {
-            throw std::exception(String::string_cast<std::string>(std::wstring(L"Could not resolve absolute path from relative path : ") + std::wstring(relativePath)).c_str());
+            return L"Error : std::wstring File::GetFullPath( wchar_t const * relativePath) : Could not retrieve path from : " + std::wstring(relativePath);
         }
 
         return std::wstring(aBuffer);
@@ -62,14 +62,20 @@ namespace internal__
         auto aPos = aFullPath.find_last_of("/\\");
         if( aPos == std::string::npos ) 
         {
-            throw std::exception(std::string("Could not find directory using file path : " + std::string(path)).c_str());
+            return "Error : std::string File::GetDirectoryFromFilePath( char const * path) : Could not retrieve directory from path from : " + std::string(path);
         }            
         return aFullPath.substr( 0, aPos );
     }
 
     std::wstring File::GetDirectoryFromFilePath( wchar_t const * path)
     {
-        return String::string_cast<std::wstring>(File::GetDirectoryFromFilePath(String::string_cast<std::string>(path).c_str()));
+        auto aFullPath(File::GetFullPath(path));
+        auto aPos = aFullPath.find_last_of(L"/\\");
+        if (aPos == std::wstring::npos)
+        {
+            return L"Error : std::wstring File::GetDirectoryFromFilePath( wchar_t const * path) : Could not retrieve directory from path from : " + std::wstring(path);
+        }
+        return aFullPath.substr(0, aPos);
     }
 
     std::string File::GetFileFromFilePath( char const * path )

@@ -186,6 +186,7 @@
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -193,7 +194,13 @@
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <OptimizeReferences>false</OptimizeReferences>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AssemblyDebug>true</AssemblyDebug>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)$(ConfigurationName)\$(TargetName).dll" "C:\Work\RTextNpp\RTextNpp\costura32"
+copy /Y "$(SolutionDir)$(ConfigurationName)\$(TargetName).pdb" "C:\Work\RTextNpp\RTextNpp\costura32"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2010_Release|Win32'">
     <ClCompile>

@@ -22,9 +22,12 @@ namespace internal__
         typedef ::LPSTR char_pointer;
         typedef ::LPCSTR const_char_pointer;
         typedef std::string type;
-        //todo
-        //typedef decltype(FormatMessageA)
+        using FormatMessageType = decltype(&::FormatMessageA);
+        static const FormatMessageType Format;
+        typedef LPSTR ErrorBufferType;
     };
+
+    const windows_traits<std::string>::FormatMessageType windows_traits<std::string>::Format = &::FormatMessageA;
 
     template<>
     struct windows_traits<std::wstring>
@@ -32,7 +35,12 @@ namespace internal__
         typedef ::LPWSTR char_pointer;
         typedef ::LPCWSTR const_char_pointer;
         typedef std::wstring type;
+        using FormatMessageType = decltype(&::FormatMessageW);
+        static const FormatMessageType Format;
+        typedef LPWSTR ErrorBufferType;
     };
+
+    const windows_traits<std::wstring>::FormatMessageType windows_traits<std::wstring>::Format = &::FormatMessageW;
 
     template<class StringType>
     typename StringType::type GetLastErrorImpl()
@@ -41,12 +49,12 @@ namespace internal__
         if (error)
         {
             typename StringType::char_pointer lpMsgBuf = nullptr;
-            ::DWORD bufLen = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                                            NULL,
-                                            error,
-                                            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                                            lpMsgBuf,
-                                            0, NULL);
+            ::DWORD bufLen = StringType::Format (FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                                 NULL,
+                                                 error,
+                                                 MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                                                 (typename StringType::ErrorBufferType)&lpMsgBuf,
+                                                 0, NULL);
             if (bufLen)
             {
                 typename StringType::const_char_pointer lpMsgStr = static_cast<typename StringType::const_char_pointer>(lpMsgBuf);
@@ -61,40 +69,51 @@ namespace internal__
     }
 }
 
-    std::string Base::GetLastErrorStr()
+    void Base::GetLastErrorStr(std::string & error)
     {
-        return internal__::GetLastErrorImpl< internal__::windows_traits<std::string> >();
+        error = internal__::GetLastErrorImpl< internal__::windows_traits<std::string> >();
+    }
+
+    void Base::GetLastErrorStr(std::wstring & error)
+    {
+        error = internal__::GetLastErrorImpl< internal__::windows_traits<std::wstring> >();
     }
 
     bool Base::FlushFileBuffers(const wchar_t * drive)
     {
         const auto volume = CreateFileW( drive,
-                                         GENERIC_WRITE,
-                                         FILE_SHARE_WRITE,
+                                         GENERIC_READ,
+                                         FILE_SHARE_READ | FILE_SHARE_WRITE,
                                          NULL,
                                          OPEN_EXISTING,
-                                         0,
+                                         FILE_FLAG_NO_BUFFERING | FILE_FLAG_RANDOM_ACCESS,
                                          NULL);
 
         if (volume == INVALID_HANDLE_VALUE)
         {
+            std::string aError;
+            GetLastErrorStr(aError);
             std::stringstream iStream;
-            iStream << "Could not open handle to " << Utilities::String::string_cast<std::string>(drive) << ", error: " << GetLastErrorStr();
+            iStream << "Could not open handle to " << Utilities::String::string_cast<std::string>(drive) << ", error: " << aError;
             throw std::exception(iStream.str().c_str());
         }
 
         //The documented way to flush an entire volume
         if (!::FlushFileBuffers(volume))
         {
+            std::string aError;
+            GetLastErrorStr(aError);
             std::stringstream iStream;
-            iStream << "Could not flush " << Utilities::String::string_cast<std::string>(drive) << ", error: " << GetLastErrorStr();
+            iStream << "Could not flush " << Utilities::String::string_cast<std::string>(drive) << ", error: " << aError;
             throw std::exception(iStream.str().c_str());
         }
         
         if (!CloseHandle(volume))
         {
+            std::string aError;
+            GetLastErrorStr(aError);
             std::stringstream iStream;
-            iStream << "Could not close handle " << Utilities::String::string_cast<std::string>(drive) << ", error: " << GetLastErrorStr();
+            iStream << "Could not close handle " << Utilities::String::string_cast<std::string>(drive) << ", error: " << aError;
             throw std::exception(iStream.str().c_str());
         }
 

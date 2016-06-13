@@ -224,10 +224,11 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <AdditionalOptions>/SAFESEH:NO /OPT:NOLBR %(AdditionalOptions)</AdditionalOptions>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy /Y "$(SolutionDir)$(ConfigurationName)\$(TargetName).dll" "C:\Work\RTextNpp\RTextNpp\costura32"
+copy /Y "$(SolutionDir)$(ConfigurationName)\$(TargetName).pdb" "C:\Work\RTextNpp\RTextNpp\costura32"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='VisualStudio2010_Release|Win32'">

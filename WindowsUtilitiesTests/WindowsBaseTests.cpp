@@ -129,7 +129,8 @@ TEST_F(StringConversion, TestStringWildcardCompare16)
 
 TEST_F(WindowsBaseTests, FlushFileBuffersTest)
 {
-    ASSERT_NO_THROW( Windows::Common::Base::FlushFileBuffers(L"\\\\.\\PHYSICALDRIVE0") );
+    //access denied by default
+    ASSERT_THROW(Windows::Common::Base::FlushFileBuffers(L"\\\\.\\PHYSICALDRIVE0"), std::exception);
 }
 
 int main(int argc, wchar_t ** argv)

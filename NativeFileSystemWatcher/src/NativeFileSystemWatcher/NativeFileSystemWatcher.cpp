@@ -170,44 +170,33 @@ namespace File
             FILE_NOTIFY_INFORMATION& fni = (FILE_NOTIFY_INFORMATION&)*pBase;
 
             std::wstring wstrFilename(fni.FileName, fni.FileNameLength / sizeof(wchar_t));
-            // Handle a trailing backslash, such as for a root directory.
-            if (wstrFilename.substr(wstrFilename.length() - 1, 1) != std::wstring(L"\\"))
+            
+            if (IsFileIncluded(wstrFilename) && !IsFileExcluded(wstrFilename))
             {
-                wstrFilename = FileSystemWatcherBase::_directoryInfo._dir + L"\\" + wstrFilename;
-            }
-            else
-            {
-                wstrFilename = FileSystemWatcherBase::_directoryInfo._dir + wstrFilename;
-            }
-
-            // If it could be a short filename, expand it.
-            auto wszFilename = Utilities::File::GetFileFromFilePath(wstrFilename.c_str());
-            auto len = wszFilename.length();
-            // The maximum length of an 8.3 filename is twelve, including the dot.
-            if (len <= 12 && (wszFilename.find(L'~') != decltype(wszFilename)::npos))
-            {
-                // Convert to the long filename form. Unfortunately, this
-                // does not work for deletions, so it's an imperfect fix.
-                wchar_t wbuf[MAX_PATH];
-                if (::GetLongPathNameW(wstrFilename.c_str(), wbuf, _countof(wbuf)) > 0)
+                // The maximum length of an 8.3 filename is twelve, including the dot.
+                if (wstrFilename.length() <= 12U && (wstrFilename.find(L'~') != std::wstring::npos))
                 {
-                    wstrFilename = wbuf;
+                    // Convert to the long filename form. Unfortunately, this
+                    // does not work for deletions, so it's an imperfect fix.
+                    wchar_t wbuf[MAX_PATH];
+                    if (::GetLongPathNameW(wstrFilename.c_str(), wbuf, _countof(wbuf)) > 0)
+                    {
+                        wstrFilename = wbuf;
+                    }
                 }
-            }
-
-            //if file was renamed just let it through, maybe it is renamed to something which doesn't match our filters
-            if (fni.Action == FILE_ACTION_RENAMED_NEW_NAME)
-            {
-                //put everything into a thread safe queue and pop them out in a different thread, thus minimising runtime costs
+                else
+                {
+                    // Handle a trailing backslash, such as for a root directory.
+                    if (wstrFilename.substr(wstrFilename.length() - 1, 1) != std::wstring(L"\\"))
+                    {
+                        wstrFilename = FileSystemWatcherBase::_directoryInfo._dir + L"\\" + wstrFilename;
+                    }
+                    else
+                    {
+                        wstrFilename = FileSystemWatcherBase::_directoryInfo._dir + wstrFilename;
+                    }
+                }
                 GetEventQueue().push(std::make_pair(wstrFilename, fni.Action));
-            }
-            else
-            {
-                //check filters and only push it this thing matches
-                if (IsFileIncluded(wstrFilename) && !IsFileExcluded(wstrFilename))
-                {
-                    GetEventQueue().push(std::make_pair(wstrFilename, fni.Action));
-                }
             }
 
             if (!fni.NextEntryOffset)
@@ -250,7 +239,7 @@ namespace File
             return;
         }
 
-        // This might mean overflow? Not sure.
+        // The number of bytes transferred. If an error occurs, this parameter is zero.
         if (!dwNumberOfBytesTransfered)
         {
             //nothing to read...

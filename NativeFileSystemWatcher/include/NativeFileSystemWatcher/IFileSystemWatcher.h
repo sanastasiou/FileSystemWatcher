@@ -261,11 +261,12 @@ namespace File
             //this has to come always first, in case a file name is changed
             break;
         case FILE_ACTION_RENAMED_NEW_NAME:
-            if (_directoryInfo._eventHandler != nullptr)
+            if (_directoryInfo._eventHandler != nullptr && !_tmpOldFileName.empty())
             {
                 //after a FILE_ACTION_RENAMED_OLD_NAME this has to come next, only then we have the complete event to dispatch
                 _directoryInfo._eventHandler->OnFileRenamed(e.first, _tmpOldFileName);
             }
+            _tmpOldFileName.clear();
             break;
         default:
             //error

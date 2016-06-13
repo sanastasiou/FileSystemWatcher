@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "NativeFileSystemWatcher/NativeFileSystemWatcher.h"
 #include "NativeFileSystemWatcher/IFileSystemWatcher.h"
+#include "WindowsUtilities/Thread.h"
 #include "Windows.h"
 #include "Direct.h"
 #include <fstream>
@@ -37,6 +38,7 @@ struct FileNotificationReceiver : Windows::File::IFileSystemWatcher
     {
         _lastNotificationFile = strFileName;
         ++_notificationCount;
+        std::wcout << L"void OnFileModified(" << strFileName << L")" << std::endl;
     }
 
     virtual ~FileNotificationReceiver()
@@ -51,6 +53,7 @@ struct FileNotificationReceiver : Windows::File::IFileSystemWatcher
         _lastNotificationFile = newFileName;
         ++_notificationCount;
         ++_renamingCount;
+        std::wcout << L"void OnFileRenamed(" << newFileName << L"   " << oldFileName << L")" << std::endl;
     }
 
     virtual void OnFileRemoved(const FileSystemString & strFileName)
@@ -58,6 +61,7 @@ struct FileNotificationReceiver : Windows::File::IFileSystemWatcher
         _lastNotificationFile = strFileName;
         ++_notificationCount;
         ++_deletionCount;
+        std::wcout << L"void OnFileRemoved(" << strFileName << L")" << std::endl;
     }
 
     virtual void OnFileAdded(const FileSystemString & strFileName)
@@ -65,6 +69,7 @@ struct FileNotificationReceiver : Windows::File::IFileSystemWatcher
         _lastNotificationFile = strFileName;
         ++_notificationCount;
         ++_additionCount;
+        std::wcout << L"void OnFileAdded(" << strFileName << L")" << std::endl;
     }
 };
 
@@ -111,6 +116,41 @@ protected:
     std::wstring _testFile;
     std::wstring _testFilePath;
 };
+
+static unsigned int observe(void *)
+{
+    auto observer = new FileNotificationReceiver();
+
+    Windows::File::NativeFileSystemWatcher * myWatcher = new Windows::File::NativeFileSystemWatcher(L"C:\\Work\\RTextNpp\\TestFiles",
+        (FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_ACCESS | FILE_NOTIFY_CHANGE_ATTRIBUTES),
+        true,
+        observer,
+        L"*.atm",
+        L"",
+        false,
+        16384);
+
+    while (myWatcher->IsWatching())
+    {
+    }
+
+    return 0;
+}
+
+#ifdef DEBUG
+
+TEST_F(NativeFileSystemWatcherTestFixture, LongRunningDebugTest)
+{
+    Windows::Threading::Thread _eventThread(observe);
+    _eventThread.Start(this);
+
+    while (true)
+    {
+        ::Sleep(10000);
+    }
+}
+
+#else 
 
 TEST_F(NativeFileSystemWatcherTestFixture, SmokeTest)
 {
@@ -302,7 +342,7 @@ TEST_F(NativeFileSystemWatcherTestFixture, FileModificationTestFileRenaming)
     auto aTestFile(aTestDir += L"\\secondTestFile.txt");
     Windows::Common::Base::FileRename(_testFilePath.c_str(), aTestFile.c_str());
 
-    ::Sleep(1);
+    ::Sleep(10);
 
     ASSERT_TRUE(_fileNotificationReceiver->_lastNotificationFile == aTestFile);
     ASSERT_TRUE(_fileNotificationReceiver->_oldFileName == _testFilePath);
@@ -426,6 +466,8 @@ TEST_F(NativeFileSystemWatcherTestFixture, FileModificationTestInclusionFilterFa
         ::delete myWatcher;
     }
 }
+
+#endif
 
 int main(int argc, wchar_t ** argv)
 {

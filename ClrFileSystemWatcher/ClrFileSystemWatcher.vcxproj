@@ -175,6 +175,10 @@
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)$(ConfigurationName)\$(TargetName).dll" "C:\Work\RTextNpp\ThirdParty\FileSystemWatcher"
+copy /Y "$(SolutionDir)$(ConfigurationName)\$(TargetName).pdb" "C:\Work\RTextNpp\ThirdParty\FileSystemWatcher"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="System" />

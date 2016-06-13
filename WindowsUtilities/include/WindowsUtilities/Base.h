@@ -17,7 +17,9 @@ namespace Common
     class WINDOWS_COMMON_BASE_API Base
     {
     public:
-        static std::string GetLastErrorStr();
+        static void GetLastErrorStr(std::wstring & error);
+
+        static void GetLastErrorStr(std::string & error);
 
         static bool FlushFileBuffers(const wchar_t * drive);
 

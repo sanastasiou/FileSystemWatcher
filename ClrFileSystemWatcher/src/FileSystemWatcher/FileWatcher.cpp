@@ -42,7 +42,7 @@ namespace Clr
         System::String^ aClrNewFileName(msclr::interop::marshal_as<System::String^>(Utilities::File::GetFileFromFilePath(newFileName.c_str())));
         System::String^ aClrOldFileName(msclr::interop::marshal_as<System::String^>(Utilities::File::GetFileFromFilePath(oldFileName.c_str())));
         System::String^ aClrDir(msclr::interop::marshal_as<System::String^>(Utilities::File::GetDirectoryFromFilePath(oldFileName.c_str())));
-        Renamed(this, gcnew RenamedEventArgs(System::IO::WatcherChangeTypes::Renamed,  aClrDir, aClrNewFileName, aClrOldFileName));
+        Renamed(this, gcnew RenamedEventArgs(System::IO::WatcherChangeTypes::Renamed, aClrDir, aClrNewFileName, aClrOldFileName));
     }
 
     void FileWatcherBase::OnFileRemoved(const File::IFileSystemWatcher::FileSystemString & strFileName)
