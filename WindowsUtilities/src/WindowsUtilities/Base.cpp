@@ -6,6 +6,11 @@
 #include <string>
 #include <exception>
 #include <sstream>
+#include <limits>
+
+#ifdef max
+#undef max
+#endif;
 
 namespace Windows
 {
@@ -443,6 +448,40 @@ namespace internal__
     bool Base::MakeDir(const wchar_t * dir, LPSECURITY_ATTRIBUTES attributes /*= nullptr*/)
     {
         return (::CreateDirectoryW(dir, attributes) != FALSE);
+    }
+
+    unsigned long long Base::GetFileSize(const char* fileName, std::string & error)
+    {
+        std::wstring werror = L"";
+        unsigned long long const size = GetFileSize(Utilities::String::string_cast<std::wstring>(fileName).c_str(), werror);
+        error = Utilities::String::string_cast<std::string>(werror);
+        return size;
+    }
+
+    unsigned long long Base::GetFileSize(const wchar_t * fileName, std::wstring & error)
+    {
+        ::HANDLE hFile = CreateFileW(fileName,
+                                     GENERIC_READ,
+                                     FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+                                     FILE_ATTRIBUTE_NORMAL,
+                                     NULL);
+
+        if (hFile == INVALID_HANDLE_VALUE)
+        {
+            GetLastErrorStr(error);
+            return std::numeric_limits<unsigned long long>::max(); // error condition, could call GetLastError to find out more
+        }
+
+        ::LARGE_INTEGER size;
+        if (!GetFileSizeEx(hFile, &size))
+        {
+            CloseHandle(hFile);
+            GetLastErrorStr(error);
+            return std::numeric_limits<unsigned long long>::max(); // error condition, could call GetLastError to find out more
+        }
+
+        CloseHandle(hFile);
+        return size.QuadPart;
     }
 
 } // namespace Common

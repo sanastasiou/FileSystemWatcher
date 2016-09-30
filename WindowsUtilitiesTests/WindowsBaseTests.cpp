@@ -133,6 +133,11 @@ TEST_F(WindowsBaseTests, FlushFileBuffersTest)
     ASSERT_THROW(Windows::Common::Base::FlushFileBuffers(L"\\\\.\\PHYSICALDRIVE0"), std::exception);
 }
 
+TEST_F(WindowsBaseTests, FileSizeTest)
+{
+    
+}
+
 int main(int argc, wchar_t ** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

@@ -54,6 +54,10 @@ namespace Common
         static bool MakeDir(const char* dir, LPSECURITY_ATTRIBUTES attributes = nullptr);
 
         static bool MakeDir(const wchar_t * dir, LPSECURITY_ATTRIBUTES attributes = nullptr);
+
+        static unsigned long long GetFileSize(const char* fileName, std::string & error);
+
+        static unsigned long long GetFileSize(const wchar_t * fileName, std::wstring & error);
     };
 
 } // namespace Common
